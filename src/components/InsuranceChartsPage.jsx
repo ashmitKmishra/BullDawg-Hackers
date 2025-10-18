@@ -57,39 +57,42 @@ const InsuranceChartsPage = () => {
       padding: '2rem',
       maxWidth: '1400px',
       margin: '0 auto',
-      backgroundColor: '#f5f5f5',
+      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)',
       minHeight: '100vh'
     }}>
       <header style={{ 
         textAlign: 'center', 
         marginBottom: '2rem',
-        backgroundColor: 'white',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
         padding: '2rem',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        borderRadius: '15px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        backdropFilter: 'blur(10px)'
       }}>
         <h1 style={{ 
-          color: '#333',
+          color: '#1e293b',
           fontSize: '2.5rem',
-          marginBottom: '0.5rem'
+          marginBottom: '0.5rem',
+          textShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
           Insurance Plan Comparison Dashboard
         </h1>
-        <p style={{ color: '#666', fontSize: '1.1rem' }}>
+        <p style={{ color: '#475569', fontSize: '1.1rem' }}>
           Compare different insurance tiers and find the best plan for you
         </p>
-        <p style={{ color: '#999', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+        <p style={{ color: '#7c3aed', fontSize: '0.9rem', marginTop: '0.5rem', fontWeight: 'bold' }}>
           {filteredPlans.length} of {plans.length} plans shown
         </p>
       </header>
 
       {/* Interactive Controls */}
       <div style={{
-        backgroundColor: 'white',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
         padding: '2rem',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginBottom: '2rem'
+        borderRadius: '15px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        marginBottom: '2rem',
+        backdropFilter: 'blur(10px)'
       }}>
         <div style={{ 
           display: 'flex', 
@@ -97,22 +100,31 @@ const InsuranceChartsPage = () => {
           alignItems: 'center',
           marginBottom: '1.5rem'
         }}>
-          <h2 style={{ color: '#333', margin: 0 }}>🎚️ Interactive Filters</h2>
+          <h2 style={{ color: '#1e293b', margin: 0 }}>🎚️ Interactive Filters</h2>
           <button
             onClick={resetFilters}
             style={{
               padding: '0.5rem 1.5rem',
-              backgroundColor: '#ff6b6b',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
               color: 'white',
               border: 'none',
-              borderRadius: '5px',
+              borderRadius: '8px',
               cursor: 'pointer',
               fontSize: '1rem',
               fontWeight: 'bold',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 12px rgba(239,68,68,0.4)'
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#ff5252'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ff6b6b'}
+            onMouseOver={(e) => {
+              e.target.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 6px 16px rgba(239,68,68,0.5)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 12px rgba(239,68,68,0.4)';
+            }}
           >
             Reset Filters
           </button>
@@ -301,13 +313,14 @@ const InsuranceChartsPage = () => {
                 style={{
                   flex: 1,
                   padding: '0.5rem',
-                  backgroundColor: showFamilyCoverage === null ? '#9C27B0' : '#e0e0e0',
-                  color: showFamilyCoverage === null ? 'white' : '#666',
+                  background: showFamilyCoverage === null ? 'linear-gradient(135deg, #9333ea 0%, #7e22ce 100%)' : '#e5e7eb',
+                  color: showFamilyCoverage === null ? 'white' : '#6b7280',
                   border: 'none',
-                  borderRadius: '5px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontWeight: 'bold',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  boxShadow: showFamilyCoverage === null ? '0 4px 12px rgba(147,51,234,0.4)' : 'none'
                 }}
               >
                 All
@@ -317,13 +330,14 @@ const InsuranceChartsPage = () => {
                 style={{
                   flex: 1,
                   padding: '0.5rem',
-                  backgroundColor: showFamilyCoverage === true ? '#4CAF50' : '#e0e0e0',
-                  color: showFamilyCoverage === true ? 'white' : '#666',
+                  background: showFamilyCoverage === true ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#e5e7eb',
+                  color: showFamilyCoverage === true ? 'white' : '#6b7280',
                   border: 'none',
-                  borderRadius: '5px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontWeight: 'bold',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  boxShadow: showFamilyCoverage === true ? '0 4px 12px rgba(16,185,129,0.4)' : 'none'
                 }}
               >
                 Yes
@@ -333,13 +347,14 @@ const InsuranceChartsPage = () => {
                 style={{
                   flex: 1,
                   padding: '0.5rem',
-                  backgroundColor: showFamilyCoverage === false ? '#f44336' : '#e0e0e0',
-                  color: showFamilyCoverage === false ? 'white' : '#666',
+                  background: showFamilyCoverage === false ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : '#e5e7eb',
+                  color: showFamilyCoverage === false ? 'white' : '#6b7280',
                   border: 'none',
-                  borderRadius: '5px',
+                  borderRadius: '8px',
                   cursor: 'pointer',
                   fontWeight: 'bold',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  boxShadow: showFamilyCoverage === false ? '0 4px 12px rgba(239,68,68,0.4)' : 'none'
                 }}
               >
                 No
@@ -350,20 +365,21 @@ const InsuranceChartsPage = () => {
 
         {/* Animation Toggle */}
         <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <label style={{ fontWeight: 'bold', color: '#555' }}>
+          <label style={{ fontWeight: 'bold', color: '#1e293b' }}>
             ✨ Chart Animations:
           </label>
           <button
             onClick={() => setChartAnimation(!chartAnimation)}
             style={{
               padding: '0.5rem 1rem',
-              backgroundColor: chartAnimation ? '#4CAF50' : '#9e9e9e',
+              background: chartAnimation ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
               color: 'white',
               border: 'none',
               borderRadius: '20px',
               cursor: 'pointer',
               fontWeight: 'bold',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              boxShadow: chartAnimation ? '0 4px 12px rgba(16,185,129,0.4)' : '0 4px 12px rgba(107,114,128,0.4)'
             }}
           >
             {chartAnimation ? 'ON' : 'OFF'}
@@ -380,80 +396,84 @@ const InsuranceChartsPage = () => {
       }}>
         {/* Premium Chart */}
         <div style={{ 
-          backgroundColor: 'white',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
           padding: '1.5rem',
-          borderRadius: '10px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderRadius: '15px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.02) translateY(-5px)';
-          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+          e.currentTarget.style.boxShadow = '0 12px 48px rgba(0,0,0,0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1) translateY(0)';
-          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
         }}>
           {filteredPlans.length > 0 && <InsurancePremiumChart plans={filteredPlans} animate={chartAnimation} />}
         </div>
 
         {/* Coverage Chart */}
         <div style={{ 
-          backgroundColor: 'white',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
           padding: '1.5rem',
-          borderRadius: '10px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderRadius: '15px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.02) translateY(-5px)';
-          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+          e.currentTarget.style.boxShadow = '0 12px 48px rgba(0,0,0,0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1) translateY(0)';
-          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
         }}>
           {filteredPlans.length > 0 && <InsuranceCoverageChart plans={filteredPlans} animate={chartAnimation} />}
         </div>
 
         {/* Copay Chart */}
         <div style={{ 
-          backgroundColor: 'white',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
           padding: '1.5rem',
-          borderRadius: '10px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderRadius: '15px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.02) translateY(-5px) rotateY(5deg)';
-          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+          e.currentTarget.style.boxShadow = '0 12px 48px rgba(0,0,0,0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1) translateY(0) rotateY(0deg)';
-          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
         }}>
           {filteredPlans.length > 0 && <InsuranceCopayChart plans={filteredPlans} animate={chartAnimation} />}
         </div>
 
         {/* Max Coverage Chart */}
         <div style={{ 
-          backgroundColor: 'white',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
           padding: '1.5rem',
-          borderRadius: '10px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          borderRadius: '15px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
           transition: 'all 0.3s ease',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)'
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'scale(1.02) translateY(-5px)';
-          e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+          e.currentTarget.style.boxShadow = '0 12px 48px rgba(0,0,0,0.4)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'scale(1) translateY(0)';
-          e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
         }}>
           {filteredPlans.length > 0 && <InsuranceMaxCoverageChart plans={filteredPlans} animate={chartAnimation} />}
         </div>
@@ -461,13 +481,14 @@ const InsuranceChartsPage = () => {
 
       {/* Plan Details Section */}
       <div style={{ 
-        backgroundColor: 'white',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,0.95) 100%)',
         padding: '2rem',
-        borderRadius: '10px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginTop: '2rem'
+        borderRadius: '15px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        marginTop: '2rem',
+        backdropFilter: 'blur(10px)'
       }}>
-        <h2 style={{ marginBottom: '1.5rem', color: '#333' }}>Plan Details</h2>
+        <h2 style={{ marginBottom: '1.5rem', color: '#1e293b' }}>Plan Details</h2>
         
         {/* Plan Selector */}
         <div style={{ marginBottom: '1.5rem' }}>
