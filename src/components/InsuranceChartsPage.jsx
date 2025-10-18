@@ -134,21 +134,42 @@ const InsuranceChartsPage = () => {
             }}>
               💰 Monthly Premium: ${premiumRange[0]} - ${premiumRange[1]}
             </label>
-            <input
-              type="range"
-              min="0"
-              max="1000"
-              value={premiumRange[1]}
-              onChange={(e) => setPremiumRange([0, parseInt(e.target.value)])}
-              style={{
-                width: '100%',
-                height: '8px',
-                borderRadius: '5px',
-                background: `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${premiumRange[1]/10}%, #ddd ${premiumRange[1]/10}%, #ddd 100%)`,
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            />
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                value={premiumRange[1]}
+                onChange={(e) => setPremiumRange([0, parseInt(e.target.value)])}
+                style={{
+                  flex: 1,
+                  height: '8px',
+                  borderRadius: '5px',
+                  background: `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${premiumRange[1]/10}%, #ddd ${premiumRange[1]/10}%, #ddd 100%)`,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              />
+              <input
+                type="number"
+                min="0"
+                max="1000"
+                value={premiumRange[1]}
+                onChange={(e) => {
+                  const val = Math.min(1000, Math.max(0, parseInt(e.target.value) || 0));
+                  setPremiumRange([0, val]);
+                }}
+                style={{
+                  width: '80px',
+                  padding: '0.5rem',
+                  fontSize: '0.9rem',
+                  border: '2px solid #4CAF50',
+                  borderRadius: '5px',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}
+              />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#999', marginTop: '0.25rem' }}>
               <span>$0</span>
               <span>$1000</span>
@@ -166,22 +187,44 @@ const InsuranceChartsPage = () => {
             }}>
               🏥 Max Deductible: ${deductibleRange[1].toLocaleString()}
             </label>
-            <input
-              type="range"
-              min="0"
-              max="10000"
-              step="500"
-              value={deductibleRange[1]}
-              onChange={(e) => setDeductibleRange([0, parseInt(e.target.value)])}
-              style={{
-                width: '100%',
-                height: '8px',
-                borderRadius: '5px',
-                background: `linear-gradient(to right, #2196F3 0%, #2196F3 ${deductibleRange[1]/100}%, #ddd ${deductibleRange[1]/100}%, #ddd 100%)`,
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            />
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                step="500"
+                value={deductibleRange[1]}
+                onChange={(e) => setDeductibleRange([0, parseInt(e.target.value)])}
+                style={{
+                  flex: 1,
+                  height: '8px',
+                  borderRadius: '5px',
+                  background: `linear-gradient(to right, #2196F3 0%, #2196F3 ${deductibleRange[1]/100}%, #ddd ${deductibleRange[1]/100}%, #ddd 100%)`,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              />
+              <input
+                type="number"
+                min="0"
+                max="10000"
+                step="500"
+                value={deductibleRange[1]}
+                onChange={(e) => {
+                  const val = Math.min(10000, Math.max(0, parseInt(e.target.value) || 0));
+                  setDeductibleRange([0, val]);
+                }}
+                style={{
+                  width: '100px',
+                  padding: '0.5rem',
+                  fontSize: '0.9rem',
+                  border: '2px solid #2196F3',
+                  borderRadius: '5px',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}
+              />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#999', marginTop: '0.25rem' }}>
               <span>$0</span>
               <span>$10,000</span>
@@ -199,21 +242,42 @@ const InsuranceChartsPage = () => {
             }}>
               📊 Max Copay: {copayMax}%
             </label>
-            <input
-              type="range"
-              min="0"
-              max="50"
-              value={copayMax}
-              onChange={(e) => setCopayMax(parseInt(e.target.value))}
-              style={{
-                width: '100%',
-                height: '8px',
-                borderRadius: '5px',
-                background: `linear-gradient(to right, #FF9800 0%, #FF9800 ${copayMax*2}%, #ddd ${copayMax*2}%, #ddd 100%)`,
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            />
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input
+                type="range"
+                min="0"
+                max="50"
+                value={copayMax}
+                onChange={(e) => setCopayMax(parseInt(e.target.value))}
+                style={{
+                  flex: 1,
+                  height: '8px',
+                  borderRadius: '5px',
+                  background: `linear-gradient(to right, #FF9800 0%, #FF9800 ${copayMax*2}%, #ddd ${copayMax*2}%, #ddd 100%)`,
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              />
+              <input
+                type="number"
+                min="0"
+                max="50"
+                value={copayMax}
+                onChange={(e) => {
+                  const val = Math.min(50, Math.max(0, parseInt(e.target.value) || 0));
+                  setCopayMax(val);
+                }}
+                style={{
+                  width: '70px',
+                  padding: '0.5rem',
+                  fontSize: '0.9rem',
+                  border: '2px solid #FF9800',
+                  borderRadius: '5px',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}
+              />
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#999', marginTop: '0.25rem' }}>
               <span>0%</span>
               <span>50%</span>
