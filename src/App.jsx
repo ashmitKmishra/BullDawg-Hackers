@@ -2,7 +2,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import LoginButton from './components/LoginButton'
 import LogoutButton from './components/LogoutButton'
 import Profile from './components/Profile'
-import MFAEnrollment from './components/MFAEnrollment'
 import './App.css'
 
 function App() {
@@ -48,12 +47,9 @@ function App() {
         )}
       </div>
       {isAuthenticated && (
-        <>
-          <MFAEnrollment />
-          <div className="content">
-            <p>Welcome! The main application will be implemented by the team.</p>
-          </div>
-        </>
+        <div className="content">
+          <p>Welcome! The main application will be implemented by the team.</p>
+        </div>
       )}
     </div>
   )
