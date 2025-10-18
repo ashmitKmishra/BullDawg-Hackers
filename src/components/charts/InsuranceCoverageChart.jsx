@@ -19,23 +19,29 @@ ChartJS.register(
   Legend
 );
 
-const InsuranceCoverageChart = ({ plans }) => {
+const InsuranceCoverageChart = ({ plans, animate = true }) => {
   const data = {
     labels: plans.map(plan => plan.tier_name),
     datasets: [
       {
         label: 'Annual Deductible ($)',
         data: plans.map(plan => plan.deductible_annual),
-        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+        backgroundColor: 'rgba(255, 99, 132, 0.8)',
         borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 2
+        borderWidth: 3,
+        borderRadius: 8,
+        hoverBackgroundColor: 'rgba(255, 99, 132, 1)',
+        hoverBorderWidth: 4
       },
       {
         label: 'Out-of-Pocket Max ($)',
         data: plans.map(plan => plan.out_of_pocket_max),
-        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        backgroundColor: 'rgba(54, 162, 235, 0.8)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 2
+        borderWidth: 3,
+        borderRadius: 8,
+        hoverBackgroundColor: 'rgba(54, 162, 235, 1)',
+        hoverBorderWidth: 4
       }
     ]
   };
@@ -43,21 +49,54 @@ const InsuranceCoverageChart = ({ plans }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: animate ? 1500 : 0,
+      easing: 'easeInOutBounce',
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === 'data' && context.mode === 'default') {
+          delay = context.dataIndex * 150 + context.datasetIndex * 100;
+        }
+        return delay;
+      }
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          font: { size: 14, weight: 'bold' },
+          padding: 15,
+          usePointStyle: true
+        }
       },
       title: {
         display: true,
-        text: 'Deductible & Out-of-Pocket Comparison',
+        text: '🏥 Deductible & Out-of-Pocket Comparison',
         font: {
-          size: 18
-        }
+          size: 20,
+          weight: 'bold'
+        },
+        padding: 20
       },
       tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        titleFont: { size: 16, weight: 'bold' },
+        bodyFont: { size: 14 },
+        padding: 15,
+        cornerRadius: 10,
+        displayColors: true,
         callbacks: {
           label: function(context) {
             return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
+          },
+          footer: function(tooltipItems) {
+            const plan = plans[tooltipItems[0].dataIndex];
+            return `\nCopay: ${plan.copay_percentage}%\nNetwork: ${plan.network_type}`;
           }
         }
       }
@@ -65,12 +104,28 @@ const InsuranceCoverageChart = ({ plans }) => {
     scales: {
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+          lineWidth: 1
+        },
         ticks: {
+          font: { size: 12 },
           callback: function(value) {
             return '$' + value.toLocaleString();
           }
         }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: { size: 12, weight: 'bold' }
+        }
       }
+    },
+    onHover: (event, activeElements) => {
+      event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
     }
   };
 
