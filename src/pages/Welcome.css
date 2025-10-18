@@ -204,9 +204,9 @@
   position: absolute;
   width: 500px;
   height: 700px;
-  background: radial-gradient(circle at center, #3b4ecd 60%, #ec4848 100%, transparent 20%);
-  filter: blur(50px);
-  opacity: 0.6;
+  background: radial-gradient(circle at center, #3b4ecd 60%, #ec4848 100%, transparent 10%);
+  filter: blur(110px);
+  opacity: 0.3;
   z-index: 1;
   pointer-events: none;
 }
