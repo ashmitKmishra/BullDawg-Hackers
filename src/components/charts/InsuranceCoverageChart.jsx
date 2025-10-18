@@ -26,21 +26,21 @@ const InsuranceCoverageChart = ({ plans, animate = true }) => {
       {
         label: 'Annual Deductible ($)',
         data: plans.map(plan => plan.deductible_annual),
-        backgroundColor: 'rgba(255, 99, 132, 0.8)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(168, 85, 247, 0.8)',  // Purple
+        borderColor: 'rgba(168, 85, 247, 1)',
         borderWidth: 3,
         borderRadius: 8,
-        hoverBackgroundColor: 'rgba(255, 99, 132, 1)',
+        hoverBackgroundColor: 'rgba(168, 85, 247, 1)',
         hoverBorderWidth: 4
       },
       {
         label: 'Out-of-Pocket Max ($)',
         data: plans.map(plan => plan.out_of_pocket_max),
-        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(14, 165, 233, 0.8)',  // Sky Blue
+        borderColor: 'rgba(14, 165, 233, 1)',
         borderWidth: 3,
         borderRadius: 8,
-        hoverBackgroundColor: 'rgba(54, 162, 235, 1)',
+        hoverBackgroundColor: 'rgba(14, 165, 233, 1)',
         hoverBorderWidth: 4
       }
     ]

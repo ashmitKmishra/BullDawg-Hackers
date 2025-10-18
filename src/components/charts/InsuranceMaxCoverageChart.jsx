@@ -31,17 +31,17 @@ const InsuranceMaxCoverageChart = ({ plans, animate = true }) => {
         label: 'Maximum Coverage ($)',
         data: plans.map(plan => plan.coverage_max),
         fill: true,
-        backgroundColor: 'rgba(75, 192, 192, 0.3)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(16, 185, 129, 0.3)',  // Emerald green
+        borderColor: 'rgba(16, 185, 129, 1)',
         borderWidth: 4,
         tension: 0.4,
         pointRadius: 8,
         pointHoverRadius: 12,
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+        pointBackgroundColor: 'rgba(16, 185, 129, 1)',
         pointBorderColor: '#fff',
         pointBorderWidth: 3,
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(75, 192, 192, 1)',
+        pointHoverBorderColor: 'rgba(16, 185, 129, 1)',
         pointHoverBorderWidth: 4
       }
     ]
@@ -114,7 +114,7 @@ const InsuranceMaxCoverageChart = ({ plans, animate = true }) => {
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(75, 192, 192, 0.1)',
+          color: 'rgba(16, 185, 129, 0.1)',
           lineWidth: 1
         },
         ticks: {

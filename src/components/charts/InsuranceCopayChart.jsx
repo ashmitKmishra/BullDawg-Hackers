@@ -23,16 +23,16 @@ const InsuranceCopayChart = ({ plans, animate = true }) => {
         label: 'Copay Percentage',
         data: plans.map(plan => plan.copay_percentage),
         backgroundColor: [
-          'rgba(205, 127, 50, 0.8)',
-          'rgba(192, 192, 192, 0.8)',
-          'rgba(255, 215, 0, 0.8)',
-          'rgba(229, 228, 226, 0.8)'
+          'rgba(251, 146, 60, 0.8)',   // Orange
+          'rgba(59, 130, 246, 0.8)',   // Blue
+          'rgba(234, 179, 8, 0.8)',    // Yellow
+          'rgba(168, 85, 247, 0.8)'    // Purple
         ],
         borderColor: [
-          'rgba(205, 127, 50, 1)',
-          'rgba(192, 192, 192, 1)',
-          'rgba(255, 215, 0, 1)',
-          'rgba(229, 228, 226, 1)'
+          'rgba(251, 146, 60, 1)',
+          'rgba(59, 130, 246, 1)',
+          'rgba(234, 179, 8, 1)',
+          'rgba(168, 85, 247, 1)'
         ],
         borderWidth: 3,
         hoverOffset: 30,
