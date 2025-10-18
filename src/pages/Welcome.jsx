@@ -159,9 +159,15 @@ export default function Welcome() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <PhoneGlowSection
-              glowClassName="h-[540px] w-[540px] bg-[radial-gradient(circle_at_center,_rgba(37,99,235,0.4)_0%,_rgba(124,58,237,0.35)_40%,_transparent_72%)] opacity-80"
-            >
+            <div className="phone-container">
+              {/* Glow Effect */}
+              <motion.div 
+                className="phone-glow"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+              />
+              
               <motion.div 
                 className="phone-mockup"
                 animate={{ 
@@ -232,7 +238,7 @@ export default function Welcome() {
                   </div>
                 </div>
               </motion.div>
-            </PhoneGlowSection>
+            </div>
           </motion.div>
         </div>
       </main>

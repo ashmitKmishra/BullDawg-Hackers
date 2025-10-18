@@ -98,10 +98,7 @@
   transition: all 0.3s ease;
 }
 
-/* ================================================
-   HERO SECTION
-   Two-column layout: text left, phone mockup right
-   ================================================ */
+
 .hero-section {
   padding-top: 120px; /* Account for fixed navbar height */
   padding-bottom: 80px;
@@ -196,6 +193,24 @@
   padding-left: clamp(2rem, 4vw, 6rem);
 }
 
+.phone-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-glow {
+  position: absolute;
+  width: 500px;
+  height: 700px;
+  background: radial-gradient(circle at center, #3b4ecd 60%, #ec4848 100%, transparent 20%);
+  filter: blur(50px);
+  opacity: 0.6;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .phone-mockup {
   position: relative;
   width: 360px;
@@ -204,6 +219,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 .phone-frame {
@@ -510,6 +526,11 @@
     width: 335px;
     height: 660px;
   }
+
+  .phone-glow {
+    width: 450px;
+    height: 450px;
+  }
 }
 
 
@@ -546,6 +567,12 @@
   .phone-mockup {
     width: 280px;
     height: 560px;
+  }
+
+  .phone-glow {
+    width: 380px;
+    height: 380px;
+    filter: blur(60px);
   }
 
   .features-grid {
@@ -596,6 +623,12 @@
   .phone-mockup {
     width: 240px;
     height: 480px;
+  }
+
+  .phone-glow {
+    width: 320px;
+    height: 320px;
+    filter: blur(50px);
   }
 
   .app-header {
