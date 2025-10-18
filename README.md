@@ -1,3 +1,15 @@
+# Chart Branch - BullDawg-Hackers
+
+## About This Branch
+
+This branch is dedicated to implementing and developing the **charts** that will be used in our hackathon project.
+
+## Purpose
+
+All chart-related features, visualizations, and data representation components will be developed in this branch before merging into the main project.
+
+---
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
