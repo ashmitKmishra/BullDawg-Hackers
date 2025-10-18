@@ -30,9 +30,16 @@ const steps = [
   ]}
 ]
 
+const slideVariants = {
+  enter: (direction) => ({ x: direction > 0 ? 300 : -300, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction) => ({ x: direction < 0 ? 300 : -300, opacity: 0 })
+}
+
 export default function Questionnaire() {
   const navigate = useNavigate()
   const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState(0)
   const [answers, setAnswers] = useState({})
   const [completed, setCompleted] = useState(false)
 
@@ -41,8 +48,12 @@ export default function Questionnaire() {
   }
 
   function next() {
-    if (stepIndex < steps.length - 1) setStepIndex(s => s + 1)
-    else finish()
+    if (stepIndex < steps.length - 1) {
+      setDirection(1)
+      setStepIndex(s => s + 1)
+    } else {
+      finish()
+    }
   }
 
   function back() {
@@ -50,6 +61,7 @@ export default function Questionnaire() {
       navigate('/signup')
       return
     }
+    setDirection(-1)
     setStepIndex(s => Math.max(0, s - 1))
   }
 
@@ -64,152 +76,166 @@ export default function Questionnaire() {
   return (
     <div className="page questionnaire">
       <motion.div 
-        className="card q-card" 
-        initial={{ y: 20, opacity: 0 }} 
-        animate={{ y: 0, opacity: 1 }} 
-        transition={{ duration: 0.5 }}
+        className="q-container" 
+        initial={{ scale: 0.95, opacity: 0 }} 
+        animate={{ scale: 1, opacity: 1 }} 
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="signup-top">
-          <motion.button 
-            className="back" 
-            onClick={back}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            ← Back
-          </motion.button>
-          <div className="progress-wrap">
-            <div className="progress-header">
-              <div className="progress-label">Questionnaire</div>
-              <div className="progress-pct">{progressPct}%</div>
-            </div>
-            <div className="progress">
-              <motion.div 
-                className="progress-bar" 
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPct}%` }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-              />
+        {!completed && (
+          <div className="q-header">
+            <motion.button 
+              className="back-btn" 
+              onClick={back}
+              whileHover={{ scale: 1.05, x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              ← Back
+            </motion.button>
+            <div className="progress-section">
+              <div className="progress-info">
+                <span className="progress-label">Questionnaire</span>
+                <motion.span 
+                  className="progress-pct"
+                  key={progressPct}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  {progressPct}%
+                </motion.span>
+              </div>
+              <div className="progress-track">
+                <motion.div 
+                  className="progress-fill" 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPct}%` }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="steps-indicator">
+        <div className="step-dots">
           {steps.map((s, i) => (
             <motion.div 
               key={s.key} 
-              className={`step-ind ${i === stepIndex ? 'active' : i < stepIndex ? 'done' : ''}`}
-              whileHover={{ scale: 1.1 }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: i * 0.05 }}
+              className={`dot ${i === stepIndex ? 'active' : i < stepIndex ? 'done' : ''}`}
+              whileHover={{ scale: 1.2 }}
+              transition={{ duration: 0.2 }}
             >
-              {i < stepIndex ? '✓' : s.icon}
+              {i < stepIndex ? '✓' : i + 1}
             </motion.div>
           ))}
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           {!completed ? (
             <motion.div 
-              key={step.key} 
-              initial={{ x: 40, opacity: 0 }} 
-              animate={{ x: 0, opacity: 1 }} 
-              exit={{ x: -40, opacity: 0 }} 
-              transition={{ duration: 0.3 }}
+              key={step.key}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="step-content"
             >
-              <div className="step-header">
-                <span className="step-icon">{step.icon}</span>
-                <h3>{step.title}</h3>
+              <div className="step-title">
+                <motion.span 
+                  className="step-icon"
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  {step.icon}
+                </motion.span>
+                <h2>{step.title}</h2>
               </div>
-              
-              <div className="fields">
-                {step.fields.map((f, idx) => (
-                  <motion.label 
-                    key={f.key} 
-                    className="field"
-                    initial={{ opacity: 0, y: 10 }}
+
+              <div className="form-fields">
+                {step.fields.map((field, i) => (
+                  <motion.div 
+                    key={field.key} 
+                    className="form-field"
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.08 }}
+                    transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
                   >
-                    {f.label}
-                    {f.type === 'select' ? (
-                      <select
-                        value={answers[f.key] ?? ''}
-                        onChange={(e) => handleChange(f.key, e.target.value)}
+                    <label>{field.label}</label>
+                    {field.type === 'select' ? (
+                      <select 
+                        value={answers[field.key] ?? ''} 
+                        onChange={(e) => handleChange(field.key, e.target.value)}
                       >
                         <option value="">Select...</option>
-                        {f.options.map(opt => (
+                        {field.options.map(opt => (
                           <option key={opt} value={opt}>{opt}</option>
                         ))}
                       </select>
-                    ) : f.type === 'textarea' ? (
+                    ) : field.type === 'textarea' ? (
                       <textarea
-                        value={answers[f.key] ?? ''}
-                        onChange={(e) => handleChange(f.key, e.target.value)}
-                        placeholder={f.placeholder}
+                        value={answers[field.key] ?? ''}
+                        onChange={(e) => handleChange(field.key, e.target.value)}
+                        placeholder={field.placeholder}
                         rows={3}
                       />
                     ) : (
                       <input
-                        type={f.type}
-                        value={answers[f.key] ?? ''}
-                        onChange={(e) => handleChange(f.key, e.target.value)}
-                        placeholder={f.placeholder}
+                        type={field.type}
+                        value={answers[field.key] ?? ''}
+                        onChange={(e) => handleChange(field.key, e.target.value)}
+                        placeholder={field.placeholder}
                       />
                     )}
-                  </motion.label>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="q-nav">
+              <div className="q-actions">
                 <motion.button 
+                  className="btn-secondary" 
                   onClick={back}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  ← Back
+                  Back
                 </motion.button>
                 <motion.button 
-                  className="primary" 
+                  className="btn-primary" 
                   onClick={next}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {stepIndex < steps.length - 1 ? 'Next →' : '✓ Finish'}
+                  {stepIndex < steps.length - 1 ? 'Next →' : 'Finish'}
                 </motion.button>
               </div>
             </motion.div>
           ) : (
             <motion.div 
-              key="done" 
-              initial={{ scale: 0.9, opacity: 0 }} 
-              animate={{ scale: 1, opacity: 1 }} 
-              transition={{ duration: 0.5 }}
-              className="completion"
+              key="complete"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="completion-view"
             >
               <motion.div 
-                className="success-icon"
+                className="success-circle"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                transition={{ duration: 0.5, delay: 0.2, type: 'spring', stiffness: 200 }}
               >
                 ✓
               </motion.div>
-              <h3>All set!</h3>
-              <p className="muted">Your responses have been saved. Our AI will analyze your data to generate personalized insurance recommendations.</p>
+              <h2>All Set!</h2>
+              <p>Thanks — your responses were saved. A backend will use these to generate personalized recommendations.</p>
               <motion.button 
-                className="primary view-results"
+                className="btn-primary"
+                onClick={() => navigate('/')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/dashboard')}
               >
-                View My Recommendations →
+                Back to Home
               </motion.button>
-              <details className="debug-details">
-                <summary>View submitted data</summary>
-                <pre className="debug">{JSON.stringify(answers, null, 2)}</pre>
-              </details>
             </motion.div>
           )}
         </AnimatePresence>
