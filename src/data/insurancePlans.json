@@ -1,0 +1,98 @@
+{
+  "insurance_plans": [
+    {
+      "tier_name": "Bronze Basic",
+      "premium_monthly": 250,
+      "deductible_annual": 6000,
+      "coverage_max": 500000,
+      "copay_percentage": 40,
+      "out_of_pocket_max": 8500,
+      "benefits": [
+        "Emergency Care",
+        "Preventive Care",
+        "Generic Prescriptions"
+      ],
+      "exclusions": [
+        "Dental",
+        "Vision",
+        "Mental Health Outpatient"
+      ],
+      "age_min": 18,
+      "age_max": 65,
+      "family_coverage": false,
+      "network_type": "HMO"
+    },
+    {
+      "tier_name": "Silver Standard",
+      "premium_monthly": 450,
+      "deductible_annual": 3500,
+      "coverage_max": 1000000,
+      "copay_percentage": 30,
+      "out_of_pocket_max": 6000,
+      "benefits": [
+        "Emergency Care",
+        "Preventive Care",
+        "Generic & Brand Prescriptions",
+        "Specialist Visits",
+        "Lab Tests"
+      ],
+      "exclusions": [
+        "Dental",
+        "Vision"
+      ],
+      "age_min": 18,
+      "age_max": 70,
+      "family_coverage": true,
+      "network_type": "PPO"
+    },
+    {
+      "tier_name": "Gold Plus",
+      "premium_monthly": 650,
+      "deductible_annual": 1500,
+      "coverage_max": 2000000,
+      "copay_percentage": 20,
+      "out_of_pocket_max": 4000,
+      "benefits": [
+        "Emergency Care",
+        "Preventive Care",
+        "All Prescriptions",
+        "Specialist Visits",
+        "Lab Tests",
+        "Mental Health",
+        "Physical Therapy"
+      ],
+      "exclusions": [
+        "Cosmetic Surgery"
+      ],
+      "age_min": 18,
+      "age_max": 75,
+      "family_coverage": true,
+      "network_type": "PPO"
+    },
+    {
+      "tier_name": "Platinum Premium",
+      "premium_monthly": 900,
+      "deductible_annual": 500,
+      "coverage_max": 5000000,
+      "copay_percentage": 10,
+      "out_of_pocket_max": 2500,
+      "benefits": [
+        "Emergency Care",
+        "Preventive Care",
+        "All Prescriptions",
+        "Specialist Visits",
+        "Lab Tests",
+        "Mental Health",
+        "Physical Therapy",
+        "Alternative Medicine",
+        "Dental Basic",
+        "Vision Basic"
+      ],
+      "exclusions": [],
+      "age_min": 18,
+      "age_max": 80,
+      "family_coverage": true,
+      "network_type": "PPO"
+    }
+  ]
+}
