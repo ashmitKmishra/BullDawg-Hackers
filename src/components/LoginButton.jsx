@@ -8,6 +8,7 @@ const LoginButton = () => {
     loginWithRedirect({
       authorizationParams: {
         screen_hint: 'login',
+        prompt: 'login', // Force fresh login screen
         acr_values: 'http://schemas.openid.net/pape/policies/2007/06/multi-factor',
         scope: 'openid profile email',
       }
@@ -18,6 +19,7 @@ const LoginButton = () => {
     loginWithRedirect({
       authorizationParams: {
         screen_hint: 'signup',
+        prompt: 'login', // Force fresh signup screen
         acr_values: 'http://schemas.openid.net/pape/policies/2007/06/multi-factor',
         scope: 'openid profile email',
       }

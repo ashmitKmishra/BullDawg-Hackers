@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from "react";
 
 const MFAEnrollment = () => {
-  const { user, getAccessTokenSilently, loginWithRedirect } = useAuth0();
+  const { user } = useAuth0();
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isNewUser, setIsNewUser] = useState(false);
@@ -34,16 +34,6 @@ const MFAEnrollment = () => {
     }
   };
 
-  const promptMFAEnrollment = () => {
-    // Force re-login to trigger MFA enrollment
-    loginWithRedirect({
-      authorizationParams: {
-        prompt: 'login',
-        screen_hint: 'signup'
-      }
-    });
-  };
-
   return (
     <div className="mfa-section">
       <h3>Multi-Factor Authentication</h3>
@@ -51,7 +41,7 @@ const MFAEnrollment = () => {
       
       {isNewUser && (
         <div className="welcome-banner">
-          <strong>Welcome, new user!</strong> We recommend setting up MFA to secure your account.
+          <strong>Welcome, new user!</strong> MFA is automatically enabled for your security.
         </div>
       )}
       
@@ -64,9 +54,8 @@ const MFAEnrollment = () => {
         </div>
       ) : enrollmentStatus === "not_enrolled" ? (
         <div className="mfa-status not-enrolled">
-          <p>⚠️ MFA is not enabled. Enhance your security by enabling it now.</p>
-          <p><strong>Note:</strong> You'll be prompted to set up MFA (SMS, Authenticator App, or Email) during your next login.</p>
-          <button onClick={promptMFAEnrollment}>Enable MFA Now</button>
+          <p>⚠️ MFA is required for this application.</p>
+          <p><strong>Note:</strong> You will be prompted to set up MFA (SMS, Authenticator App, or Email) during your next login.</p>
         </div>
       ) : enrollmentStatus === "error" ? (
         <div className="mfa-status error">
@@ -75,11 +64,11 @@ const MFAEnrollment = () => {
       ) : null}
       
       <div className="mfa-info">
-        <h4>Why enable MFA?</h4>
+        <h4>Why MFA is required:</h4>
         <ul>
-          <li>Protect your financial and benefits information</li>
-          <li>Prevent unauthorized access to your account</li>
-          <li>Meet industry security standards</li>
+          <li>Protects your financial and benefits information</li>
+          <li>Prevents unauthorized access to your account</li>
+          <li>Meets industry security standards</li>
           <li>Required for handling sensitive personal data</li>
         </ul>
       </div>
