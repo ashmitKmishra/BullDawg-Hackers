@@ -1,30 +1,31 @@
-# Adaptive Benefit Questionnaire (Python-only)
+# Adaptive Benefit Questionnaire + CoverageCraft UI
 
-A minimal Flask web application that uses adaptive questioning to provide personalized benefit recommendations and a downloadable PDF report.
+This repository now hosts both:
 
-## Features
+- A Python/Flask backend that powers an adaptive benefits questionnaire and generates a PDF report.
+- A React (Vite) frontend called "CoverageCraft" that provides a polished, animated UI.
 
-- **Adaptive Questioning Engine**: Smart question selection based on user responses
-- **PDF Report Generation**: Comprehensive benefit assessment reports
-- **Risk Assessment**: Multi-dimensional risk analysis
-- **Interactive Web Interface**: Clean, responsive UI for questionnaire completion
+You can run either independently.
 
-## Quick Start
+## Backend (Flask) – Adaptive Benefit Questionnaire
 
-1. **Install Dependencies**
+Minimal Flask application that uses an adaptive engine to recommend benefits and generate a PDF.
+
+### Quick Start
+
+1. Install dependencies
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Run the Application**
+2. Run the server
    ```bash
    python app_with_pdf.py
    ```
 
-3. **Open Browser**
-   Navigate to `http://localhost:5000`
+3. Open browser: http://localhost:5000
 
-## Project Structure
+### Project Structure (backend)
 
 ```
 ├── app_with_pdf.py                  # Flask app with inlined PDF generation and risk assessment
@@ -34,41 +35,46 @@ A minimal Flask web application that uses adaptive questioning to provide person
 └── reports/                         # Generated PDF reports
 ```
 
-## Core Components
+## Frontend (React + Vite) – CoverageCraft
 
-### Adaptive Engine
-- Entropy-based question selection
-- Dynamic benefit scoring
-- Intelligent stopping criteria
+Animated UI and multi-step questionnaire experience. Lives under `src/` with Vite tooling.
 
-### Report Generation
-- Professional PDF reports with burgundy theme
-- Comprehensive risk assessment
-- Actionable benefit recommendations
+### Quick Start
 
-## Environment Setup
+```bash
+npm install
+npm run dev
+```
 
-Create a `.env` file for Supabase integration (optional):
+Build for production:
+
+```bash
+npm run build
+```
+
+### Tech Stack
+
+- React 19 + Vite
+- Framer Motion, React Router v6
+- Custom CSS / Tailwind (where configured)
+
+## Environment
+
+Create a `.env` (backend) and/or `.env.local` (frontend) if needed. Example (backend optional):
+
 ```
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_key
 ```
 
-## Testing
+## Testing (backend)
 
-Run the test suite:
 ```bash
 python -m pytest tests/
 ```
 
-## Development
-
-The application uses:
-- **Backend**: Flask (Python 3.10+)
-- **PDF**: ReportLab
-- **Database**: Supabase (optional)
-- **Frontend**: Vanilla JavaScript, CSS3
-
 ## License
 
-MIT License
+MIT
+
+— Built with ❤️ by BullDawg Hackers

@@ -1,11 +1,5 @@
 node_modules/
-src/
-api/
-package.json
-package-lock.json
-netlify.toml
-vercel.json
-server.js
+dist/
 
 # Python caches and build artifacts
 __pycache__/
@@ -16,7 +10,6 @@ __pycache__/
 *.so
 *.egg
 *.egg-info/
-dist/
 build/
 
 # Virtual environments
@@ -38,9 +31,10 @@ Thumbs.db
 
 # Environment and secrets
 .env
+.env.local
+.env.production
 
 # App databases and data
 hr_database.db
 data/
 models/
-reports/
