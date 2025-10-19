@@ -224,6 +224,10 @@
                 </div>
                     </div>
 
+                    <div id="fwsPreview" class="subtitle" style="margin-top:6px;">
+                        Estimated Financial Wellbeing Score: <span id="fwsValue">—</span>/100
+                    </div>
+
                     <button class="btn" onclick="startQuestionnaire()">Start Questionnaire</button>
                 </div>
 
@@ -486,6 +490,26 @@
                 return null;
             }
         }
+
+        // Live preview of FWS as user edits inputs
+        function updateFwsPreview() {
+            const fws = computeFinancialWellbeingScore();
+            const el = document.getElementById('fwsValue');
+            if (el) {
+                el.textContent = (typeof fws === 'number') ? fws : '—';
+            }
+        }
+
+        ['annual_income','total_debt','monthly_expenses','savings','num_children']
+            .forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updateFwsPreview);
+                    el.addEventListener('change', updateFwsPreview);
+                }
+            });
+        // Initialize preview on load
+        updateFwsPreview();
     </script>
 </body>
 </html>
