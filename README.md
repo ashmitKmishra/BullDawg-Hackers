@@ -1,16 +1,84 @@
-# React + Vite
+# Adaptive Benefit Questionnaire
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An intelligent Flask web application that uses adaptive questioning to provide personalized employee benefit recommendations.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Adaptive Questioning Engine**: Smart question selection based on user responses
+- **Machine Learning Models**: Advanced benefit scoring using XGBoost, LightGBM, and CatBoost
+- **PDF Report Generation**: Comprehensive benefit assessment reports
+- **Risk Assessment**: Multi-dimensional risk analysis
+- **Interactive Web Interface**: Clean, responsive UI for questionnaire completion
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Expanding the ESLint configuration
+2. **Run the Application**
+   ```bash
+   python app.py
+   ```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3. **Open Browser**
+   Navigate to `http://localhost:5000`
+
+## Project Structure
+
+```
+├── app.py                          # Main Flask application
+├── adaptive_questionnaire_engine.py # Core questioning logic
+├── pdf_report_generator.py         # PDF report generation
+├── templates/index.html            # Web interface
+├── models/                         # Trained ML models
+├── data/                          # Training datasets
+├── tests/                         # Test suite
+└── reports/                       # Generated PDF reports
+```
+
+## Core Components
+
+### Adaptive Engine
+- Entropy-based question selection
+- Dynamic benefit scoring
+- Intelligent stopping criteria
+
+### Machine Learning
+- Multi-model ensemble approach
+- Feature engineering for benefit prediction
+- Continuous model improvement
+
+### Report Generation
+- Professional PDF reports with burgundy theme
+- Comprehensive risk assessment
+- Actionable benefit recommendations
+
+## Environment Setup
+
+Create a `.env` file for Supabase integration (optional):
+```
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_key
+```
+
+## Testing
+
+Run the test suite:
+```bash
+python -m pytest tests/
+```
+
+## Development
+
+The application uses:
+- **Backend**: Flask, Python 3.11+
+- **ML**: scikit-learn, XGBoost, LightGBM, CatBoost
+- **PDF**: ReportLab
+- **Database**: Supabase (optional)
+- **Frontend**: Vanilla JavaScript, CSS3
+
+## License
+
+MIT License
