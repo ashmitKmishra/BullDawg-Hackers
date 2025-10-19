@@ -1,4 +1,11 @@
-node_modules
+node_modules/
+src/
+api/
+package.json
+package-lock.json
+netlify.toml
+vercel.json
+server.js
 
 # Python caches and build artifacts
 __pycache__/
@@ -35,5 +42,5 @@ Thumbs.db
 # App databases and data
 hr_database.db
 data/
-models/*.pkl
-models/*metrics.json
+models/
+reports/

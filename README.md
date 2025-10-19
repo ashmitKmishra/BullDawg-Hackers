@@ -27,12 +27,11 @@ A minimal Flask web application that uses adaptive questioning to provide person
 ## Project Structure
 
 ```
-├── app_with_pdf.py                 # Main Flask application (with PDF endpoint)
+├── app_with_pdf.py                  # Flask app with inlined PDF generation and risk assessment
 ├── adaptive_questionnaire_engine.py # Core questioning logic
-├── pdf_report_generator.py         # PDF report generation
-├── templates/index.html            # Web interface
-├── tests/                         # Test suite
-└── reports/                       # Generated PDF reports
+├── templates/index.html             # Web interface (single template)
+├── tests/                           # Test suite
+└── reports/                         # Generated PDF reports
 ```
 
 ## Core Components
