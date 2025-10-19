@@ -116,16 +116,21 @@ export default function Questionnaire() {
         )}
 
         <div className="step-dots">
-          {steps.map((s, i) => (
-            <motion.div 
-              key={s.key} 
-              className={`dot ${i === stepIndex ? 'active' : i < stepIndex ? 'done' : ''}`}
-              whileHover={{ scale: 1.2 }}
-              transition={{ duration: 0.2 }}
-            >
-              {i < stepIndex ? '✓' : i + 1}
-            </motion.div>
-          ))}
+          {steps.map((s, i) => {
+            const isDone = completed ? true : i < stepIndex
+            const isActive = !completed && i === stepIndex
+            return (
+              <motion.div
+                key={s.key}
+                className={`dot ${isActive ? 'active' : isDone ? 'done' : ''}`}
+                whileHover={{ scale: 1.2 }}
+                transition={{ duration: 0.2 }}
+              >
+                <span className="number">{i + 1}</span>
+                {isDone && <span className="check">✓</span>}
+              </motion.div>
+            )
+          })}
         </div>
 
         <AnimatePresence mode="wait" custom={direction}>

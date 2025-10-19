@@ -115,7 +115,7 @@ export default function Welcome() {
           {/* Brand Logo */}
           <div className="brand">
             <span className="brand-icon">🏥</span>
-            <span className="brand-name">CoverageCraft</span>
+            <span className="brand-name">CoverageCompass</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -251,7 +251,7 @@ export default function Welcome() {
                   <div className="phone-screen">
                     {/* App Header */}
                     <div className="app-header">
-                      <span className="app-logo">🏥 CoverageCraft</span>
+                      <span className="app-logo">🏥 CoverageCompass</span>
                     </div>
 
                     {/* App Content - Animated Coverage Cards */}
@@ -295,7 +295,7 @@ export default function Welcome() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        CoverageCraft
+                        CoverageCompass
                       </motion.button>
                     </div>
                   </div>

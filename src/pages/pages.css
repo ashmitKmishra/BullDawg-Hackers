@@ -573,6 +573,7 @@ button.ghost:hover, .btn-secondary:hover{
   display:flex; 
   align-items:center; 
   justify-content:center; 
+  position: relative;
   background:white; 
   color: var(--text-light); 
   font-weight:700; 
@@ -590,10 +591,27 @@ button.ghost:hover, .btn-secondary:hover{
   transform:scale(1.1);
 }
 
-.dot.done{ 
-  background: var(--success); 
-  color:white; 
-  border-color:transparent;
+.dot .number{
+  position: relative;
+  z-index: 1;
+}
+
+.dot .check{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #065f46; /* darker green for contrast */
+  font-size: 1.2rem;
+  font-weight: 800;
+  opacity: 0.35; /* keep numbers visible under check */
+}
+
+.dot.done{
+  background: rgba(16, 185, 129, 0.15); /* translucent green */
+  color: var(--text);
+  border-color: rgba(16, 185, 129, 0.35);
 }
 
 .step-content{ 
@@ -680,7 +698,7 @@ button.ghost:hover, .btn-secondary:hover{
   width:96px; 
   height:96px; 
   border-radius:50%; 
-  background:linear-gradient(135deg, var(--success), var(--purple)); 
+  background: var(--success); /* solid green */
   color:white; 
   display:flex; 
   align-items:center; 
@@ -688,7 +706,7 @@ button.ghost:hover, .btn-secondary:hover{
   font-size:3.5rem; 
   font-weight:700; 
   margin:0 auto 2rem auto; 
-  box-shadow:0 12px 36px rgba(16,185,129,0.5);
+  box-shadow:0 20px 50px rgba(16,185,129,0.45), 0 0 0 18px rgba(16,185,129,0.12);
 }
 
 .completion-view h2{ 
