@@ -98,12 +98,26 @@ def summarize_text_chunk(text: str, chunk_number: int, total_chunks: int) -> str
     prompt = f"""
     This is chunk {chunk_number} of {total_chunks} from an employee benefits document.
     
-    Please summarize the insurance plans and benefits information in this section. Focus on:
+    Please summarize ALL insurance plans and benefits information in this section, including:
+    - Health insurance plans (medical, prescription)
+    - Dental insurance plans (DHMO, PPO, self-funded)
+    - Vision insurance plans
+    - Life insurance plans
+    - Disability insurance plans (STD, LTD)
+    - Accident insurance
+    - Critical illness insurance
+    - Hospital indemnity insurance
+    - Employee assistance programs
+    - Any other benefits mentioned
+    
+    For each plan found, include:
     - Plan names and types
     - Key benefits and features
     - Coverage details
     - Cost information
     - Eligibility requirements
+    
+    IMPORTANT: Include plans mentioned in disclosures, footnotes, or fine print sections.
     
     Keep the summary concise but comprehensive.
     
@@ -131,38 +145,50 @@ def categorize_insurance_plans(text: str) -> Dict[str, Any]:
     if not model:
         raise HTTPException(status_code=500, detail="Gemini API not configured")
     
-    # Chunk text to avoid token limits (Gemini free tier has ~2K token limit per minute)
-    # Each chunk should be around 8000 chars (~2000 tokens) to stay well under limits
-    MAX_CHUNK_SIZE = 8000
+    # For better results, process the entire summarized text since it's already condensed
+    # Limit to 30000 chars to stay within Gemini token limits
+    MAX_TEXT_LENGTH = 30000
     
-    if len(text) > MAX_CHUNK_SIZE:
-        print(f"Text too long ({len(text)} chars), will process in chunks")
-        chunks = []
-        for i in range(0, len(text), MAX_CHUNK_SIZE):
-            chunks.append(text[i:i + MAX_CHUNK_SIZE])
-        print(f"Split into {len(chunks)} chunks")
-        
-        # Process first chunk only to avoid rate limits on free tier
-        print("Processing first chunk only (to avoid rate limits)")
-        text = chunks[0] + "\n\n[Note: This is a large document. Only the first section has been analyzed to avoid API rate limits. Please upgrade your Gemini API tier for full document analysis.]"
+    if len(text) > MAX_TEXT_LENGTH:
+        print(f"Text too long ({len(text)} chars), truncating to {MAX_TEXT_LENGTH} chars")
+        text = text[:MAX_TEXT_LENGTH] + "\n\n[Note: Document truncated to fit within API limits. Some plans from later sections may be summarized less completely.]"
+    else:
+        print(f"Text length is {len(text)} chars, processing full text")
     
     prompt = f"""
-    Analyze the following insurance document text and categorize all different insurance plans mentioned. 
-    Please identify and categorize plans into the following categories:
+    Analyze the following insurance document text and categorize ALL different insurance plans mentioned. 
+    
+    CRITICAL: You MUST find and include ALL plans, especially:
+    - Dental plans (DHMO, PPO, Self-funded, DentalConnect, etc.)
+    - Vision plans (VisionConnect, discount programs, etc.)
+    - Health insurance plans
+    - Life insurance plans
+    - Disability insurance (STD, LTD)
+    - Employee Assistance Programs (EAP, EmployeeConnect, etc.)
+    - Supplemental plans (Accident, Critical Illness, Hospital Indemnity)
+    - Any other benefits
+    
+    Please categorize plans into these categories:
     
     1. Health Insurance Plans (Medical, Hospital, Prescription)
-    2. Dental Insurance Plans
-    3. Vision Insurance Plans
+    2. Dental Insurance Plans (DHMO, PPO, Self-funded, etc.) - MUST INCLUDE ALL DENTAL PLANS MENTIONED
+    3. Vision Insurance Plans (Insurance plans and discount programs) - MUST INCLUDE ALL VISION PLANS MENTIONED  
     4. Life Insurance Plans
     5. Disability Insurance Plans (Short-term, Long-term)
     6. Employee Assistance Programs
     7. Retirement Plans (401k, Pension)
-    8. Other Benefits (Flexible Spending, Health Savings Account, etc.)
+    8. Other Benefits (Flexible Spending, HSA, Accident, Critical Illness, Hospital Indemnity, etc.)
+    
+    IMPORTANT: 
+    - Include plans even if briefly mentioned in disclosures, footnotes, or fine print
+    - Include ALL plan variations (DHMO, PPO, discount programs, etc.)
+    - Read through the ENTIRE document before categorizing
+    - If a dental or vision plan is mentioned ANYWHERE, it MUST be included in the output
     
     For each plan found, provide:
     - Plan Name
     - Category
-    - Key Features/Benefits
+    - Key Features/Benefits  
     - Cost Information (if available)
     - Eligibility Requirements (if mentioned)
     - Coverage Details
@@ -173,8 +199,8 @@ def categorize_insurance_plans(text: str) -> Dict[str, Any]:
         "total_plans_found": number,
         "categories": {{
             "health_insurance": [list of health plans],
-            "dental_insurance": [list of dental plans],
-            "vision_insurance": [list of vision plans],
+            "dental_insurance": [list of ALL dental plans found - this MUST NOT be empty if any dental plans are mentioned],
+            "vision_insurance": [list of ALL vision plans found - this MUST NOT be empty if any vision plans are mentioned],
             "life_insurance": [list of life plans],
             "disability_insurance": [list of disability plans],
             "employee_assistance": [list of EAP programs],
