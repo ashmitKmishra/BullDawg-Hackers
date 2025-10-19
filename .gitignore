@@ -39,3 +39,6 @@ ENV/
 backend/uploads/
 backend/extracted_data/
 backend/categorized_data/
+
+# Database
+hr_database.db
