@@ -12,6 +12,10 @@ function App() {
   const [newEmployee, setNewEmployee] = useState({ name: '', email: '', department: '' });
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [employeeSearch, setEmployeeSearch] = useState('');
+  const [benefitSearch, setBenefitSearch] = useState('');
+  const [showAddBenefitForm, setShowAddBenefitForm] = useState(false);
+  const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
 
   const hrManagerName = "Sarah Johnson";
 
@@ -44,6 +48,7 @@ function App() {
       body: JSON.stringify(newBenefit)
     });
     setNewBenefit({ name: '', description: '', cost: '' });
+    setShowAddBenefitForm(false);
     fetchBenefits();
   };
 
@@ -61,11 +66,23 @@ function App() {
       body: JSON.stringify(newEmployee)
     });
     setNewEmployee({ name: '', email: '', department: '' });
+    setShowAddEmployeeForm(false);
     fetchEmployees();
   };
 
   const enrollEmployee = async (benefitId) => {
     if (!selectedEmployee) return;
+    
+    // Check if employee already has this benefit
+    const alreadyEnrolled = employeeBenefits.some(
+      eb => eb.employee_id === selectedEmployee.id && eb.benefit_id === benefitId
+    );
+    
+    if (alreadyEnrolled) {
+      alert('This employee is already enrolled in this benefit!');
+      return;
+    }
+    
     await fetch(`${API_URL}/employee-benefits`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,12 +114,30 @@ function App() {
     setShowEnrollModal(false);
   };
 
+  // Filter employees based on search
+  const filteredEmployees = employees.filter(emp => 
+    emp.name.toLowerCase().includes(employeeSearch.toLowerCase()) ||
+    emp.email.toLowerCase().includes(employeeSearch.toLowerCase()) ||
+    (emp.department && emp.department.toLowerCase().includes(employeeSearch.toLowerCase()))
+  );
+
+  // Filter benefits based on search
+  const filteredBenefits = benefits.filter(ben =>
+    ben.name.toLowerCase().includes(benefitSearch.toLowerCase()) ||
+    (ben.description && ben.description.toLowerCase().includes(benefitSearch.toLowerCase()))
+  );
+
+  // Format cost display
+  const formatCost = (cost) => {
+    return cost === 0 || cost === '0' || cost === '0.00' ? 'Price varies' : `$${cost}/month`;
+  };
+
   return (
     <div className="app-fullscreen">
       {/* Header */}
       <header className="main-header">
         <div className="header-content">
-          <h1 className="company-title">HR Benefits Management</h1>
+          <h1 className="company-title">CoverageCompass - Management</h1>
           <div className="hr-manager">
             <span className="manager-label">HR Manager:</span>
             <span className="manager-name">{hrManagerName}</span>
@@ -157,48 +192,81 @@ function App() {
           <div className="benefits-view">
             <h2 className="page-title">Manage Benefits and Policies</h2>
             
-            <div className="add-section">
-              <h3>Add New Benefit/Policy</h3>
-              <form onSubmit={addBenefit} className="add-form">
-                <input
-                  type="text"
-                  placeholder="Benefit/Policy Name"
-                  value={newBenefit.name}
-                  onChange={(e) => setNewBenefit({ ...newBenefit, name: e.target.value })}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Description"
-                  value={newBenefit.description}
-                  onChange={(e) => setNewBenefit({ ...newBenefit, description: e.target.value })}
-                />
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Monthly Cost"
-                  value={newBenefit.cost}
-                  onChange={(e) => setNewBenefit({ ...newBenefit, cost: e.target.value })}
-                />
-                <button type="submit" className="add-btn">Add Benefit/Policy</button>
-              </form>
-            </div>
+            {!showAddBenefitForm ? (
+              <div className="add-button-container">
+                <button 
+                  onClick={() => setShowAddBenefitForm(true)}
+                  className="show-form-btn"
+                >
+                  + Add New Benefit/Policy
+                </button>
+              </div>
+            ) : (
+              <div className="add-section">
+                <div className="section-title-row">
+                  <h3>Add New Benefit/Policy</h3>
+                  <button 
+                    onClick={() => {
+                      setShowAddBenefitForm(false);
+                      setNewBenefit({ name: '', description: '', cost: '' });
+                    }}
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <form onSubmit={addBenefit} className="add-form">
+                  <input
+                    type="text"
+                    placeholder="Benefit/Policy Name"
+                    value={newBenefit.name}
+                    onChange={(e) => setNewBenefit({ ...newBenefit, name: e.target.value })}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={newBenefit.description}
+                    onChange={(e) => setNewBenefit({ ...newBenefit, description: e.target.value })}
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Monthly Cost (enter 0 for variable pricing)"
+                    value={newBenefit.cost}
+                    onChange={(e) => setNewBenefit({ ...newBenefit, cost: e.target.value })}
+                  />
+                  <button type="submit" className="add-btn">Add Benefit/Policy</button>
+                </form>
+              </div>
+            )}
 
             <div className="list-section">
-              <h3>Current Benefits & Policies</h3>
+              <div className="section-header">
+                <h3>Current Benefits & Policies</h3>
+                <input
+                  type="text"
+                  placeholder="Search benefits..."
+                  value={benefitSearch}
+                  onChange={(e) => setBenefitSearch(e.target.value)}
+                  className="search-input"
+                />
+              </div>
               <div className="items-grid">
-                {benefits.map(b => (
+                {filteredBenefits.map(b => (
                   <div key={b.id} className="item-card">
                     <h4>{b.name}</h4>
                     <p>{b.description || 'No description'}</p>
-                    <p className="cost-tag">${b.cost}/month</p>
+                    <p className="cost-tag">{formatCost(b.cost)}</p>
                     <button onClick={() => deleteBenefit(b.id)} className="delete-btn">
                       Delete
                     </button>
                   </div>
                 ))}
-                {benefits.length === 0 && (
-                  <p className="empty-message">No benefits or policies added yet.</p>
+                {filteredBenefits.length === 0 && (
+                  <p className="empty-message">
+                    {benefitSearch ? 'No benefits match your search.' : 'No benefits or policies added yet.'}
+                  </p>
                 )}
               </div>
             </div>
@@ -210,40 +278,71 @@ function App() {
           <div className="employees-view">
             <h2 className="page-title">Manage Employees</h2>
             
-            <div className="add-section">
-              <h3>Add New Employee</h3>
-              <form onSubmit={addEmployee} className="add-form">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={newEmployee.name}
-                  onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={newEmployee.email}
-                  onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Department"
-                  value={newEmployee.department}
-                  onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
-                />
-                <button type="submit" className="add-btn">Add Employee</button>
-              </form>
-            </div>
+            {!showAddEmployeeForm ? (
+              <div className="add-button-container">
+                <button 
+                  onClick={() => setShowAddEmployeeForm(true)}
+                  className="show-form-btn"
+                >
+                  + Add New Employee
+                </button>
+              </div>
+            ) : (
+              <div className="add-section">
+                <div className="section-title-row">
+                  <h3>Add New Employee</h3>
+                  <button 
+                    onClick={() => {
+                      setShowAddEmployeeForm(false);
+                      setNewEmployee({ name: '', email: '', department: '' });
+                    }}
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <form onSubmit={addEmployee} className="add-form">
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={newEmployee.name}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+                    required
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={newEmployee.email}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Department"
+                    value={newEmployee.department}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+                  />
+                  <button type="submit" className="add-btn">Add Employee</button>
+                </form>
+              </div>
+            )}
 
             <div className="list-section">
-              <h3>Employee List</h3>
-              <div className="items-grid">
-                {employees.map(e => (
+              <div className="section-header">
+                <h3>Employee List</h3>
+                <input
+                  type="text"
+                  placeholder="Search employees..."
+                  value={employeeSearch}
+                  onChange={(e) => setEmployeeSearch(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              <div className="horizontal-scroll">
+                {filteredEmployees.map(e => (
                   <div 
                     key={e.id} 
-                    className="item-card employee-item"
+                    className="employee-card"
                     onClick={() => handleEmployeeClick(e)}
                   >
                     <h4>{e.name}</h4>
@@ -264,8 +363,10 @@ function App() {
                     </button>
                   </div>
                 ))}
-                {employees.length === 0 && (
-                  <p className="empty-message">No employees added yet.</p>
+                {filteredEmployees.length === 0 && (
+                  <p className="empty-message">
+                    {employeeSearch ? 'No employees match your search.' : 'No employees added yet.'}
+                  </p>
                 )}
               </div>
             </div>
@@ -323,21 +424,27 @@ function App() {
             <h2>Add Benefits to {selectedEmployee.name}</h2>
             
             <div className="benefits-selection">
-              {benefits.map(b => (
-                <div key={b.id} className="benefit-option">
-                  <div>
-                    <strong>{b.name}</strong>
-                    <p>{b.description}</p>
-                    <p className="cost-tag">${b.cost}/month</p>
+              {benefits.map(b => {
+                const alreadyEnrolled = employeeBenefits.some(
+                  eb => eb.employee_id === selectedEmployee.id && eb.benefit_id === b.id
+                );
+                return (
+                  <div key={b.id} className={`benefit-option ${alreadyEnrolled ? 'already-enrolled' : ''}`}>
+                    <div>
+                      <strong>{b.name}</strong>
+                      <p>{b.description}</p>
+                      <p className="cost-tag">{formatCost(b.cost)}</p>
+                    </div>
+                    <button 
+                      onClick={() => enrollEmployee(b.id)}
+                      className="select-btn"
+                      disabled={alreadyEnrolled}
+                    >
+                      {alreadyEnrolled ? 'Already Enrolled' : 'Select'}
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => enrollEmployee(b.id)}
-                    className="select-btn"
-                  >
-                    Select
-                  </button>
-                </div>
-              ))}
+                );
+              })}
               {benefits.length === 0 && (
                 <p className="empty-message">No benefits available. Add benefits first.</p>
               )}
