@@ -7,15 +7,11 @@ import './Welcome.css'
 const features = [
   {
     title: 'Benefits Selection Assistance',
-    description: 'Get personalized recommendations for your health, dental, vision, and group benefits based on your lifestyle and family needs.',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    bgColor: '#ffffff'
+    description: 'Get personalized recommendations for your health, dental, vision, and group benefits based on your lifestyle and family needs.'
   },
   {
     title: 'Financial Wellness Educator',
-    description: 'Track your spending, create a personalized budget, and plan for retirement with easy-to-understand guidance.',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    bgColor: '#ffffff'
+    description: 'Track your spending, create a personalized budget, and plan for retirement with easy-to-understand guidance.'
   }
 ]
 
@@ -61,45 +57,45 @@ export default function Welcome() {
     <div className="welcome-container">
       <div className="welcome-content">
         <header className="welcome-header">
-          <h1 className="welcome-title">
-            <span className="dollar-icon">💲</span>
-            CoverageCompass
-          </h1>
-          <p className="welcome-subtitle">Your Guide to Smart Benefits Decisions</p>
+          <div className="welcome-header-content">
+            <div>
+              <h1 className="welcome-title">
+                <span className="dollar-icon">💲</span>
+                CoverageCompass
+              </h1>
+              <p className="welcome-subtitle">Your Guide to Smart Benefits Decisions</p>
+            </div>
+            
+            <div className="login-section">
+              <div className="login-buttons">
+                <button onClick={handleEmployeeLogin} className="login-btn employee-btn">
+                  <span className="btn-icon">
+                    <FontAwesomeIcon icon={faPerson} />
+                  </span>
+                  <span className="btn-text">Employee Login</span>
+                </button>
+                <button onClick={handleHRLogin} className="login-btn hr-btn">
+                  <span className="btn-icon">
+                    <FontAwesomeIcon icon={faUserTie} />
+                  </span>
+                  <span className="btn-text">HR Login</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </header>
 
-        <div className="login-section">
-          <h2 className="section-title">Access Portal</h2>
-          <div className="login-buttons">
-            <button onClick={handleEmployeeLogin} className="login-btn employee-btn">
-              <span className="btn-icon">
-                <FontAwesomeIcon icon={faPerson} />
-              </span>
-              <span className="btn-text">Employee Login</span>
-            </button>
-            <button onClick={handleHRLogin} className="login-btn hr-btn">
-              <span className="btn-icon">
-                <FontAwesomeIcon icon={faUserTie} />
-              </span>
-              <span className="btn-text">HR Login</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="features-section">
-          <div className="features-content">
-            <h2 className="section-title">Our Services</h2>
-            <div className="features-grid">
+        <div className="sections-container">
+          <div className="features-section">
+            <div className="features-content">
+              <h2 className="section-title">Our Services</h2>
+              <div className="features-grid">
             {features.map((feature, index) => (
               <div 
                 key={index} 
                 className="feature-card"
-                style={{ backgroundColor: feature.bgColor }}
               >
-                <h3 
-                  className="feature-title"
-                  style={{ background: feature.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
-                >
+                <h3 className="feature-title">
                   {feature.title}
                 </h3>
                 <p className="feature-description">{feature.description}</p>
@@ -107,6 +103,7 @@ export default function Welcome() {
             ))}
             </div>
           </div>
+        </div>
         </div>
 
         <div className="benefits-carousel-section">
