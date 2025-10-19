@@ -1,3 +1,14 @@
+Project consolidation status
+
+This branch now runs a single Flask app with:
+- Backend: app_with_pdf.py, adaptive_questionnaire_engine.py, pdf_report_generator.py
+- UI: templates/index.html (vanilla JS/CSS)
+- Tests: tests/
+
+Pending cleanup candidates (to be removed if not used):
+- package.json, package-lock.json, server.js, src/ (React), api/, netlify.toml, vercel.json
+
+After confirmation, we will remove these to minimize file count and keep a Python-only repo.
 # Feature Overview
 
 ## Core Features
