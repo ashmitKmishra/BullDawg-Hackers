@@ -58,7 +58,7 @@ export default function Questionnaire() {
 
   function back() {
     if (stepIndex === 0) {
-      navigate('/signup')
+      navigate('/')
       return
     }
     setDirection(-1)

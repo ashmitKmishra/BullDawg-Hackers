@@ -1,18 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useAuth0 } from '@auth0/auth0-react'
 import './pages.css'
 
 export default function Signup() {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const navigate = useNavigate()
+  const { loginWithRedirect } = useAuth0()
 
   function handleSubmit(e) {
     e.preventDefault()
-    const user = { name, email }
-    sessionStorage.setItem('demo_user', JSON.stringify(user))
-    navigate('/questionnaire')
+    // Kick off Auth0 signup flow and return to questionnaire when done
+    loginWithRedirect({
+      authorizationParams: {
+        screen_hint: 'signup',
+        prompt: 'login',
+        acr_values: 'http://schemas.openid.net/pape/policies/2007/06/multi-factor',
+        scope: 'openid profile email offline_access'
+      },
+      appState: { returnTo: '/questionnaire' }
+    })
   }
 
   return (
@@ -89,11 +98,12 @@ export default function Signup() {
             />
           </motion.label>
 
-          <motion.div 
+          <motion.div
             className="actions"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
+            style={{ display: 'flex', gap: '0.75rem' }}
           >
             <motion.button 
               type="button" 
@@ -110,7 +120,7 @@ export default function Signup() {
               className="primary" 
               type="submit"
             >
-              Continue →
+              Continue with Auth0 →
             </motion.button>
           </motion.div>
         </form>

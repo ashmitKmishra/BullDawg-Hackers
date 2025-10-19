@@ -6,7 +6,6 @@ import './pages.css'
 export default function Dashboard() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState(null)
 
   useEffect(() => {
     const userData = sessionStorage.getItem('questionnaire')
@@ -16,7 +15,8 @@ export default function Dashboard() {
     }
     
     setTimeout(() => {
-      setData(JSON.parse(userData))
+      // Simulate loading, data could be used here in future
+      // const parsed = JSON.parse(userData)
       setLoading(false)
     }, 2000)
   }, [navigate])

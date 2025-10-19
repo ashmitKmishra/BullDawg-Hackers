@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { useAuth0 } from '@auth0/auth0-react'
 import PhoneGlowSection from '../components/PhoneGlowSection'
 import './Welcome.css'
 
@@ -81,6 +82,20 @@ const featureCards = [
 
 export default function Welcome() {
   const [currentScreen, setCurrentScreen] = useState(0)
+  const navigate = useNavigate()
+  const { isAuthenticated, isLoading, user, loginWithRedirect } = useAuth0()
+
+  const handleGetStarted = () => {
+    loginWithRedirect({
+      authorizationParams: {
+        screen_hint: 'signup',
+        prompt: 'login',
+        acr_values: 'http://schemas.openid.net/pape/policies/2007/06/multi-factor',
+        scope: 'openid profile email offline_access'
+      },
+      appState: { returnTo: '/questionnaire' }
+    })
+  }
 
   // Cycle through phone screens every 3 seconds
   useEffect(() => {
@@ -105,7 +120,45 @@ export default function Welcome() {
 
           {/* Desktop Navigation */}
           <nav className="nav-links">
-            <Link to="/signup" className="nav-link">Get Started</Link>
+            {isLoading ? null : (
+              !isAuthenticated ? (
+                <button onClick={handleGetStarted} className="nav-link" style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                  Get Started
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate('/questionnaire')}
+                  title={user?.name || 'Profile'}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0
+                  }}
+                >
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ color: 'var(--muted, #6b7280)', fontSize: '0.95rem' }}>Hi, {user?.given_name || user?.name || 'You'}</span>
+                    {user?.picture ? (
+                      <img src={user.picture} alt="profile" style={{ width: 36, height: 36, borderRadius: '50%', border: '2px solid rgba(0,0,0,0.08)' }} />
+                    ) : (
+                      <span style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                        color: 'white',
+                        fontWeight: 600
+                      }}>
+                        {(user?.name || 'U').charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </span>
+                </button>
+              )
+            )}
           </nav>
 
           {/* Mobile Hamburger Menu */}
@@ -140,16 +193,26 @@ export default function Welcome() {
             <p className="hero-subtitle">
             </p>
 
-            {/* CTA Button - With accent color and hover animation */}
-            <Link to="/signup">
+            {/* CTA Button - Direct Auth0 or continue when authed */}
+            {!isAuthenticated ? (
               <motion.button
                 className="cta-button"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={handleGetStarted}
               >
                 Get Started →
               </motion.button>
-            </Link>
+            ) : (
+              <motion.button
+                className="cta-button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate('/questionnaire')}
+              >
+                Continue →
+              </motion.button>
+            )}
           </motion.div>
 
           {/* RIGHT COLUMN - Phone Mockup with Animated Screens */}

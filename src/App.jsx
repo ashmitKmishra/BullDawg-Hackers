@@ -6,6 +6,7 @@ import Questionnaire from './pages/Questionnaire'
 import Dashboard from './pages/Dashboard'
 import LandingPage from './pages/LandingPage'
 import './App.css'
+import RequireAuth from './components/RequireAuth'
 
 function AnimatedRoutes(){
   const location = useLocation()
@@ -15,8 +16,8 @@ function AnimatedRoutes(){
         <Route path="/" element={<Welcome />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/questionnaire" element={<Questionnaire />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+  <Route path="/questionnaire" element={<RequireAuth><Questionnaire /></RequireAuth>} />
+  <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
       </Routes>
     </AnimatePresence>
   )
