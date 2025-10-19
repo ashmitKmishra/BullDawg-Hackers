@@ -273,7 +273,7 @@ function App() {
           <div className="home-view">
             {/* Welcome Message */}
             <div className="welcome-section">
-              <h2 className="welcome-title">Welcome back, {hrManagerName}</h2>
+              <h2 className="welcome-title">Welcome to your HR Portal</h2>
               <p className="welcome-subtitle">Here's your HR dashboard overview</p>
             </div>
 
