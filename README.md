@@ -42,12 +42,12 @@ npm run build
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 19 + Vite
-- **Animations**: Framer Motion
-- **Routing**: React Router v6
-- **Styling**: Custom CSS with CSS Variables
-- **AI Backend** (planned): AWS Bedrock + Claude
-- **Auth** (planned): Auth0
+- Backend: Node.js + Express (local server for Gemini and Supabase integration)
+- Database: Supabase (PostgreSQL) for real-time DataBase Management
+- Machine Learning: XGBoost for dynamic quiz question generation and scoring
+- APIs: Gemini (Google Generative AI) for benefit extraction and chatbot automation & Auth0 for secure sign ups with 2 step verification
+- State Management: React Hooks (useState, useEffect, useCallback)
+- Version Control: Git/GitHub for multi-branch collaboration
 
 ## 📁 Project Structure
 
@@ -67,9 +67,9 @@ src/
 
 1. **Welcome Page** → Animated landing with feature showcase
 2. **Signup** → Quick account creation (20% progress)
-3. **Questionnaire** → 5 steps collecting user data (20-100% progress)
-4. **Dashboard** → AI-generated recommendations and insights
-
+3. **Questionnaire** → Dynamic Questionnare to get personal recommandation (20-100% progress)
+4. **Dashboard** → HR administrative panel for managing insurance data and viewing employee insights.
+   
 ## 🎨 Design System
 
 - **Primary Color**: Indigo (`#4f46e5`)
