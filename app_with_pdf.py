@@ -26,10 +26,9 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 from datetime import datetime
 from typing import Dict, List, Optional
-from dotenv import load_dotenv
-from supabase import create_client
-
-load_dotenv()
+"""
+All third-party integrations are intentionally minimized to keep the app lean.
+"""
 
 # Burgundy color theme for PDF
 BURGUNDY = colors.HexColor('#6b0f1a')
@@ -38,12 +37,8 @@ DARK_BURGUNDY = colors.HexColor('#4a0a11')
 class BenefitReportGenerator:
     """Generate comprehensive PDF reports with benefit recommendations"""
     def __init__(self):
-        supabase_url = os.getenv('SUPABASE_URL')
-        supabase_key = os.getenv('SUPABASE_ANON_KEY')
-        try:
-            self.supabase = create_client(supabase_url, supabase_key) if supabase_url and supabase_key else None
-        except Exception:
-            self.supabase = None
+        # Minimal implementation – no external services required
+        self.supabase = None
 
     def _get_default_benefit_info(self, benefit_type: str) -> Dict:
         defaults = {
@@ -304,16 +299,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/home')
-def home():
-    """Serve a simple home page linking to HR and Questionnaire"""
-    return render_template('home.html')
-
-
-@app.route('/hr')
-def hr_portal():
-    """Serve a stub HR page users can navigate to from Home"""
-    return render_template('hr.html')
+# Removed /home and /hr routes to keep only the questionnaire UI
 
 
 @app.route('/api/start', methods=['POST'])
@@ -546,7 +532,7 @@ if __name__ == '__main__':
     print("  • Adaptive questioning (8–12 questions)")
     print("  • Accurate recommendations")
     print("  • Comprehensive PDF reports with risk assessment")
-    print("  • Supabase integration for benefit details")
+    # External integrations intentionally omitted for simplicity
     print("\nOpen your browser to: http://localhost:5000")
     print("\nPress Ctrl+C to stop the server\n")
     

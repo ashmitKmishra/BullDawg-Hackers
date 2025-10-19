@@ -1,15 +1,6 @@
-# Adaptive Benefit Questionnaire + CoverageCraft UI
+# Adaptive Benefit Questionnaire (Flask-only)
 
-This repository now hosts both:
-
-- A Python/Flask backend that powers an adaptive benefits questionnaire and generates a PDF report.
-- A React (Vite) frontend called "CoverageCraft" that provides a polished, animated UI.
-
-You can run either independently.
-
-## Backend (Flask) – Adaptive Benefit Questionnaire
-
-Minimal Flask application that uses an adaptive engine to recommend benefits and generate a PDF.
+Minimal Flask application that uses an adaptive engine to recommend benefits and generate a PDF. This repo has been simplified to contain only what's needed to run the adaptive benefit questionnaire.
 
 ### Quick Start
 
@@ -35,36 +26,19 @@ Minimal Flask application that uses an adaptive engine to recommend benefits and
 └── reports/                         # Generated PDF reports
 ```
 
-## Frontend (React + Vite) – CoverageCraft
+## What was removed
 
-Animated UI and multi-step questionnaire experience. Lives under `src/` with Vite tooling.
-
-### Quick Start
-
-```bash
-npm install
-npm run dev
-```
-
-Build for production:
-
-```bash
-npm run build
-```
-
-### Tech Stack
-
-- React 19 + Vite
-- Framer Motion, React Router v6
-- Custom CSS / Tailwind (where configured)
+- React/Vite frontend and related configs (vite.config.js, package.json, tailwind/postcss, src/)
+- Extra pages (Home/HR) – the app now serves the questionnaire directly at `/`
 
 ## Environment
 
-Create a `.env` (backend) and/or `.env.local` (frontend) if needed. Example (backend optional):
+Create a `.env` if needed. Example (optional):
 
 ```
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_key
+# Not required anymore – external integrations removed
+# SUPABASE_URL=your_supabase_url
+# SUPABASE_ANON_KEY=your_supabase_key
 ```
 
 ## Testing (backend)
