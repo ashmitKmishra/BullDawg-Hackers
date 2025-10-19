@@ -541,4 +541,7 @@ if __name__ == '__main__':
     # Create reports directory
     os.makedirs('reports', exist_ok=True)
     
-    app.run(debug=True, port=5000)
+    # Allow overriding host/port via environment variables for flexibility
+    port = int(os.environ.get('PORT', '5000'))
+    host = os.environ.get('HOST', '127.0.0.1')
+    app.run(debug=True, host=host, port=port)
