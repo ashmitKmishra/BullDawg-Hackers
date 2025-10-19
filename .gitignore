@@ -8,3 +8,28 @@
 *.egg-info/
 dist/
 build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Reports and generated PDFs
+reports/
+test_report*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Environment and secrets
+.env
+
+# Generated datasets and models
+data/
+models/*.pkl
+models/*metrics.json

@@ -14,7 +14,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from datetime import datetime
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
@@ -208,38 +208,7 @@ class BenefitReportGenerator:
         story.append(profile_table)
         story.append(Spacer(1, 0.3*inch))
 
-        # Answered Questions Summary (requested on first page)
-        if answered_questions:
-            story.append(Paragraph("YOUR ANSWERS", heading_style))
-            story.append(Spacer(1, 0.08*inch))
-
-            # Build a two-column table: Question | Your Answer
-            qa_rows = [["Question", "Your Answer"]]
-            for qa in answered_questions:
-                qtext = qa.get('text', qa.get('id', ''))
-                ans = qa.get('answer', '')
-                # Ensure strings
-                qtext = str(qtext)
-                ans = str(ans)
-                qa_rows.append([qtext, ans])
-
-            qa_table = Table(qa_rows, colWidths=[4.2*inch, 2.3*inch])
-            qa_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
-                ('TEXTCOLOR', (0, 0), (-1, 0), DARK_BURGUNDY),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 9),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-                ('GRID', (0, 0), (-1, -1), 0.25, colors.lightgrey),
-                ('LEFTPADDING', (0, 0), (-1, -1), 8),
-                ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-                ('TOPPADDING', (0, 0), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ]))
-            story.append(qa_table)
-            story.append(Spacer(1, 0.2*inch))
+        # No longer including user's responses in the PDF by request
         
         # COMPREHENSIVE RISK ASSESSMENT - Enhanced Section
         story.append(PageBreak())
@@ -253,21 +222,7 @@ class BenefitReportGenerator:
         story.append(Spacer(1, 0.2*inch))
         
         # Financial Wellbeing Score (0-100) using real inputs
-        fws_components = []
-        try:
-            dti = (user_profile.get('total_debt', 0) or 0) / max(1.0, float(user_profile.get('annual_income', 0) or 0))
-            emergency_months = 0
-            monthly_expenses = float(user_profile.get('monthly_expenses', 0) or 0)
-            savings = float(user_profile.get('savings', 0) or 0)
-            if monthly_expenses > 0:
-                emergency_months = savings / monthly_expenses
-            # Score pieces: lower DTI better, higher emergency months better
-            dti_score = max(0, 40 * (1 - min(dti, 1.0)))  # up to 40 pts
-            ef_score = min(40, emergency_months * (40/6))  # 6 months => 40 pts
-            stability_score = 20 if user_profile.get('num_children', 0) == 0 else 15  # simple proxy
-            financial_wellbeing = int(round(min(100, dti_score + ef_score + stability_score)))
-        except Exception:
-            financial_wellbeing = None
+        financial_wellbeing = compute_financial_wellbeing_score(user_profile)
 
         if financial_wellbeing is not None:
             story.append(Paragraph(f"<b>Financial Wellbeing Score:</b> <font color='#6b0f1a'>{financial_wellbeing}/100</font>", body_style))
@@ -292,8 +247,8 @@ class BenefitReportGenerator:
             ('Work-Life Balance', risk_assessment.get('worklife_risk', 'Medium'),
              risk_assessment.get('worklife_risk_detail', risk_assessment.get('worklife_detail', 'Balance and wellness factors')))
         ]
-
-        severity_order = {'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3}
+        
+        severity_order = {'Important': 0, 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3}
         risk_categories.sort(key=lambda x: severity_order.get(x[1], 99))
         
         for category_name, risk_level, detail in risk_categories:
@@ -302,7 +257,7 @@ class BenefitReportGenerator:
             story.append(Spacer(1, 0.05*inch))
             
             # Risk level as simple text (no colored bars)
-            risk_level_text = f"<font color='#6b0f1a'><b>Risk Level:</b></font> {risk_level}"
+            risk_level_text = f"<font color='#6b0f1a'><b>Risk Level:</b></font> {'Important' if risk_level=='Critical' else risk_level}"
             story.append(Paragraph(risk_level_text, body_style))
             story.append(Spacer(1, 0.05*inch))
             
@@ -714,7 +669,7 @@ def calculate_risk_assessment(profile: Dict, answers: List) -> Dict:
         worklife_risk = 'Low'
         worklife_detail = 'Good work-life balance. Maintain boundaries and use available benefits.'
     
-    return {
+    result = {
         'financial_risk': financial_risk,
         'financial_risk_detail': financial_detail,
         'health_risk': health_risk,
@@ -732,6 +687,35 @@ def calculate_risk_assessment(profile: Dict, answers: List) -> Dict:
         'worklife_risk': worklife_risk,
         'worklife_risk_detail': worklife_detail
     }
+
+    # Include computed Financial Wellbeing Score so UI can display it without recomputing
+    result['financial_wellbeing_score'] = compute_financial_wellbeing_score(profile)
+
+    return result
+
+
+def compute_financial_wellbeing_score(user_profile: Dict) -> Optional[int]:
+    """Compute a simple Financial Wellbeing Score (0-100) from the profile.
+    Components:
+    - Debt-to-income ratio (lower is better) up to 40 points
+    - Emergency fund months up to 40 points (6 months => 40 points)
+    - Stability proxy up to 20 points (no children gets max by default)
+    Returns an int 0..100 or None if inputs are unusable.
+    """
+    try:
+        income = float(user_profile.get('annual_income', 0) or 0)
+        debt = float(user_profile.get('total_debt', 0) or 0)
+        monthly_expenses = float(user_profile.get('monthly_expenses', 0) or 0)
+        savings = float(user_profile.get('savings', 0) or 0)
+        dti = debt / max(1.0, income)
+        emergency_months = (savings / monthly_expenses) if monthly_expenses > 0 else 0.0
+        dti_score = max(0.0, 40.0 * (1.0 - min(dti, 1.0)))
+        ef_score = min(40.0, emergency_months * (40.0 / 6.0))
+        stability_score = 20.0 if int(user_profile.get('num_children', 0) or 0) == 0 else 15.0
+        score = int(round(min(100.0, dti_score + ef_score + stability_score)))
+        return score
+    except Exception:
+        return None
 
 
 # Example usage
