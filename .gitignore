@@ -1,5 +1,9 @@
 node_modules
 
+# System files
+.DS_Store
+*.log
+
 # Environment variables
 .env
 backend/.env
