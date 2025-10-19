@@ -16,6 +16,7 @@ function App() {
   const [benefitSearch, setBenefitSearch] = useState('');
   const [showAddBenefitForm, setShowAddBenefitForm] = useState(false);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
+  const [showManagerDropdown, setShowManagerDropdown] = useState(false);
 
   const hrManagerName = "Sarah Johnson";
 
@@ -24,6 +25,17 @@ function App() {
     fetchEmployees();
     fetchEmployeeBenefits();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showManagerDropdown && !event.target.closest('.hr-manager')) {
+        setShowManagerDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showManagerDropdown]);
 
   const fetchBenefits = async () => {
     const res = await fetch(`${API_URL}/benefits`);
@@ -92,8 +104,7 @@ function App() {
       })
     });
     fetchEmployeeBenefits();
-    setShowEnrollModal(false);
-    setSelectedEmployee(null);
+    // Don't close the modal - keep it open for multiple selections
   };
 
   const removeEnrollment = async (id) => {
@@ -112,6 +123,12 @@ function App() {
   const closeModal = () => {
     setSelectedEmployee(null);
     setShowEnrollModal(false);
+  };
+
+  const handleLogout = () => {
+    setShowManagerDropdown(false);
+    alert('Logging out...');
+    // Add your logout logic here
   };
 
   // Filter employees based on search
@@ -138,9 +155,22 @@ function App() {
       <header className="main-header">
         <div className="header-content">
           <h1 className="company-title">CoverageCompass - Management</h1>
-          <div className="hr-manager">
+          <div 
+            className="hr-manager"
+            onClick={() => setShowManagerDropdown(!showManagerDropdown)}
+          >
             <span className="manager-label">HR Manager:</span>
             <span className="manager-name">{hrManagerName}</span>
+            {showManagerDropdown && (
+              <div 
+                className="manager-dropdown"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button onClick={handleLogout} className="logout-btn">
+                  🚪 Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
