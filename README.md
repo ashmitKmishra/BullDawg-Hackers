@@ -1,11 +1,10 @@
-# Adaptive Benefit Questionnaire
+# Adaptive Benefit Questionnaire (Python-only)
 
-An intelligent Flask web application that uses adaptive questioning to provide personalized employee benefit recommendations.
+A minimal Flask web application that uses adaptive questioning to provide personalized benefit recommendations and a downloadable PDF report.
 
 ## Features
 
 - **Adaptive Questioning Engine**: Smart question selection based on user responses
-- **Machine Learning Models**: Advanced benefit scoring using XGBoost, LightGBM, and CatBoost
 - **PDF Report Generation**: Comprehensive benefit assessment reports
 - **Risk Assessment**: Multi-dimensional risk analysis
 - **Interactive Web Interface**: Clean, responsive UI for questionnaire completion
@@ -19,7 +18,7 @@ An intelligent Flask web application that uses adaptive questioning to provide p
 
 2. **Run the Application**
    ```bash
-   python app.py
+   python app_with_pdf.py
    ```
 
 3. **Open Browser**
@@ -28,12 +27,10 @@ An intelligent Flask web application that uses adaptive questioning to provide p
 ## Project Structure
 
 ```
-├── app.py                          # Main Flask application
+├── app_with_pdf.py                 # Main Flask application (with PDF endpoint)
 ├── adaptive_questionnaire_engine.py # Core questioning logic
 ├── pdf_report_generator.py         # PDF report generation
 ├── templates/index.html            # Web interface
-├── models/                         # Trained ML models
-├── data/                          # Training datasets
 ├── tests/                         # Test suite
 └── reports/                       # Generated PDF reports
 ```
@@ -44,11 +41,6 @@ An intelligent Flask web application that uses adaptive questioning to provide p
 - Entropy-based question selection
 - Dynamic benefit scoring
 - Intelligent stopping criteria
-
-### Machine Learning
-- Multi-model ensemble approach
-- Feature engineering for benefit prediction
-- Continuous model improvement
 
 ### Report Generation
 - Professional PDF reports with burgundy theme
@@ -73,8 +65,7 @@ python -m pytest tests/
 ## Development
 
 The application uses:
-- **Backend**: Flask, Python 3.11+
-- **ML**: scikit-learn, XGBoost, LightGBM, CatBoost
+- **Backend**: Flask (Python 3.10+)
 - **PDF**: ReportLab
 - **Database**: Supabase (optional)
 - **Frontend**: Vanilla JavaScript, CSS3
