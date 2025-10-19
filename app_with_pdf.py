@@ -304,6 +304,18 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/home')
+def home():
+    """Serve a simple home page linking to HR and Questionnaire"""
+    return render_template('home.html')
+
+
+@app.route('/hr')
+def hr_portal():
+    """Serve a stub HR page users can navigate to from Home"""
+    return render_template('hr.html')
+
+
 @app.route('/api/start', methods=['POST'])
 def start_questionnaire():
     """Initialize a new questionnaire session"""
