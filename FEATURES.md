@@ -1,7 +1,7 @@
 Project consolidation status
 
 This branch now runs a single Flask app with:
-- Backend: app_with_pdf.py, adaptive_questionnaire_engine.py, pdf_report_generator.py
+- Backend: main.py, adaptive_questionnaire_engine.py, pdf_report_generator.py
 - UI: templates/index.html (vanilla JS/CSS)
 - Tests: tests/
 

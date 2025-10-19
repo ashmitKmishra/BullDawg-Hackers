@@ -11,7 +11,7 @@ Minimal Flask application that uses an adaptive engine to recommend benefits and
 
 2. Run the server
    ```bash
-   python app_with_pdf.py
+   python main.py
    ```
 
 3. Open browser: http://localhost:5000
@@ -38,7 +38,7 @@ This repo publishes a static site from `docs/` to GitHub Pages (workflow runs on
 Steps:
 - Deploy backend (choose one):
    1) Render (one-click): create a new Web Service from this repo; Render will read `render.yaml`.
-   2) Any Python host: run `gunicorn app_with_pdf:app --bind 0.0.0.0:$PORT` with Python 3.10+.
+   2) Any Python host: run `gunicorn main:app --bind 0.0.0.0:$PORT` with Python 3.10+.
 - Note your backend URL (e.g., `https://your-app.onrender.com`).
 - Edit `docs/config.js` and set `window.API_BASE = 'https://your-app.onrender.com'`.
 - Push to HR-manager; GitHub Actions will deploy Pages. Enable Pages for the repo (Source: GitHub Actions).
