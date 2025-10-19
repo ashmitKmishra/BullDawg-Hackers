@@ -1,0 +1,156 @@
+{
+  "per_benefit": [
+    {
+      "benefit": "medical",
+      "accuracy": 0.9791333333333333,
+      "precision": 0.9791333333333333,
+      "recall": 1.0,
+      "f1": 0.9894566645332973,
+      "best_iteration": 2
+    },
+    {
+      "benefit": "dental",
+      "accuracy": 0.957,
+      "precision": 0.9569942659021203,
+      "recall": 1.0,
+      "f1": 0.9780245988211647,
+      "best_iteration": 684
+    },
+    {
+      "benefit": "vision",
+      "accuracy": 0.8945333333333333,
+      "precision": 0.9887840484244258,
+      "recall": 0.8841133397007322,
+      "f1": 0.9335238255315573,
+      "best_iteration": 431
+    },
+    {
+      "benefit": "life_insurance",
+      "accuracy": 0.9417333333333333,
+      "precision": 0.9989951992854751,
+      "recall": 0.9118516253948843,
+      "f1": 0.9534363345764518,
+      "best_iteration": 529
+    },
+    {
+      "benefit": "disability",
+      "accuracy": 0.9165333333333333,
+      "precision": 0.9994287672797898,
+      "recall": 0.8752376188094046,
+      "f1": 0.9332195434179646,
+      "best_iteration": 509
+    },
+    {
+      "benefit": "401k",
+      "accuracy": 0.863,
+      "precision": 0.9356378600823045,
+      "recall": 0.8992959417767582,
+      "f1": 0.9171070146424106,
+      "best_iteration": 462
+    },
+    {
+      "benefit": "hsa",
+      "accuracy": 0.9906666666666667,
+      "precision": 0.7752442996742671,
+      "recall": 0.99581589958159,
+      "f1": 0.8717948717948719,
+      "best_iteration": 218
+    },
+    {
+      "benefit": "healthcare_fsa",
+      "accuracy": 0.9136,
+      "precision": 0.9380930014091122,
+      "recall": 0.9400357714393297,
+      "f1": 0.9390633816061689,
+      "best_iteration": 743
+    },
+    {
+      "benefit": "dependent_care_fsa",
+      "accuracy": 0.9534,
+      "precision": 0.9035329837151532,
+      "recall": 1.0,
+      "f1": 0.9493221199158994,
+      "best_iteration": 474
+    },
+    {
+      "benefit": "accident_insurance",
+      "accuracy": 0.9085333333333333,
+      "precision": 0.9964449711153903,
+      "recall": 0.8330650154798762,
+      "f1": 0.9074598677998111,
+      "best_iteration": 546
+    },
+    {
+      "benefit": "critical_illness",
+      "accuracy": 0.9157333333333333,
+      "precision": 0.9176836377769141,
+      "recall": 0.98293231204729,
+      "f1": 0.9491879723428204,
+      "best_iteration": 1156
+    },
+    {
+      "benefit": "hospital_indemnity",
+      "accuracy": 0.9407333333333333,
+      "precision": 0.9991788133853419,
+      "recall": 0.9170042392840321,
+      "f1": 0.9563295181018815,
+      "best_iteration": 571
+    },
+    {
+      "benefit": "legal_services",
+      "accuracy": 0.9243333333333333,
+      "precision": 0.8492295430393199,
+      "recall": 1.0,
+      "f1": 0.91846850082609,
+      "best_iteration": 475
+    },
+    {
+      "benefit": "identity_theft",
+      "accuracy": 0.9099333333333334,
+      "precision": 0.9962731425823516,
+      "recall": 0.8626001873633808,
+      "f1": 0.9246304044630405,
+      "best_iteration": 550
+    },
+    {
+      "benefit": "pet_insurance",
+      "accuracy": 0.9278666666666666,
+      "precision": 0.8561543579507651,
+      "recall": 0.9998445998445998,
+      "f1": 0.922437275985663,
+      "best_iteration": 508
+    },
+    {
+      "benefit": "commuter_benefits",
+      "accuracy": 0.9583333333333334,
+      "precision": 0.7981917985146917,
+      "recall": 1.0,
+      "f1": 0.8877715927455557,
+      "best_iteration": 246
+    },
+    {
+      "benefit": "long_term_care",
+      "accuracy": 0.9608,
+      "precision": 0.5489428347689899,
+      "recall": 0.9831697054698457,
+      "f1": 0.7045226130653267,
+      "best_iteration": 168
+    },
+    {
+      "benefit": "supplemental_life",
+      "accuracy": 0.8247333333333333,
+      "precision": 0.9303651209366816,
+      "recall": 0.7350292112950341,
+      "f1": 0.8212415856394915,
+      "best_iteration": 509
+    }
+  ],
+  "overall": {
+    "accuracy": 0.9267000000000001,
+    "precision": 0.9093504432875794,
+    "recall": 0.9344441926381533,
+    "f1": 0.9142776492116371,
+    "hamming_loss": 0.0733,
+    "exact_match": 0.24693333333333334
+  }
+}
