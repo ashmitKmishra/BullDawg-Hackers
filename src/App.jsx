@@ -11,6 +11,7 @@ function App() {
   const [newBenefit, setNewBenefit] = useState({ name: '', description: '', cost: '' });
   const [newEmployee, setNewEmployee] = useState({ name: '', email: '', department: '' });
   const [enrollment, setEnrollment] = useState({ employee_id: '', benefit_id: '' });
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
     fetchBenefits();
@@ -74,6 +75,18 @@ function App() {
   const removeEnrollment = async (id) => {
     await fetch(`${API_URL}/employee-benefits/${id}`, { method: 'DELETE' });
     fetchEmployeeBenefits();
+  };
+
+  const getEmployeeBenefits = (employeeId) => {
+    return employeeBenefits.filter(eb => eb.employee_id === employeeId);
+  };
+
+  const handleEmployeeClick = (employee) => {
+    setSelectedEmployee(employee);
+  };
+
+  const closeModal = () => {
+    setSelectedEmployee(null);
   };
 
   return (
@@ -155,10 +168,16 @@ function App() {
             </form>
             <div className="list">
               {employees.map(e => (
-                <div key={e.id} className="card">
+                <div 
+                  key={e.id} 
+                  className="card employee-card" 
+                  onClick={() => handleEmployeeClick(e)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <h3>{e.name}</h3>
                   <p>{e.email}</p>
                   <p>{e.department}</p>
+                  <p className="view-benefits">Click to view benefits →</p>
                 </div>
               ))}
             </div>
@@ -200,6 +219,41 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* Employee Benefits Modal */}
+      {selectedEmployee && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <button className="close-btn" onClick={closeModal}>×</button>
+            <h2>{selectedEmployee.name}'s Benefits</h2>
+            <p className="employee-info">
+              <strong>Email:</strong> {selectedEmployee.email}<br />
+              <strong>Department:</strong> {selectedEmployee.department}
+            </p>
+            <div className="benefits-list">
+              {getEmployeeBenefits(selectedEmployee.id).length > 0 ? (
+                getEmployeeBenefits(selectedEmployee.id).map(eb => (
+                  <div key={eb.id} className="benefit-item">
+                    <h3>{eb.benefit_name}</h3>
+                    <p>Enrolled on: {eb.enrollment_date}</p>
+                    <button 
+                      onClick={() => {
+                        removeEnrollment(eb.id);
+                        closeModal();
+                      }} 
+                      className="delete"
+                    >
+                      Remove Benefit
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="no-benefits">No benefits enrolled yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
