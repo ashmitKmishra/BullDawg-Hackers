@@ -17,9 +17,9 @@ build/
 venv/
 ENV/
 
-# Reports and generated PDFs (keep tracked for local use; adjust as needed)
-# reports/
-# test_report*.pdf
+# Reports and generated PDFs (do not commit binaries)
+reports/
+test_report*.pdf
 
 # OS files
 .DS_Store

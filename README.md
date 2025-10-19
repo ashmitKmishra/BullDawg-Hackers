@@ -63,8 +63,4 @@ Create a `.env` if needed. Example (optional):
 python -m pytest tests/
 ```
 
-## License
 
-MIT
-
-— Built with ❤️ by BullDawg Hackers
