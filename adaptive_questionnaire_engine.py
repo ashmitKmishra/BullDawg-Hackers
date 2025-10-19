@@ -1164,7 +1164,14 @@ def adjust_priors_with_financials(
     adjusted = priors.copy()
     
     # Calculate financial metrics
+    # savings_rate (legacy) was based on income; instead, prefer emergency_months derived from expenses
     savings_rate = financials.savings / (financials.annual_income / 12) if financials.annual_income > 0 else 0
+    emergency_months = None
+    try:
+        if financials.monthly_expenses and financials.monthly_expenses > 0:
+            emergency_months = financials.savings / financials.monthly_expenses
+    except Exception:
+        emergency_months = None
     debt_to_income = financials.total_debt / financials.annual_income if financials.annual_income > 0 else 0
     
     # High income → can afford more coverage
@@ -1172,10 +1179,12 @@ def adjust_priors_with_financials(
         adjusted[BenefitType.LIFE] = min(adjusted[BenefitType.LIFE] + 10, 100)
         adjusted[BenefitType.DISABILITY] = min(adjusted[BenefitType.DISABILITY] + 10, 100)
     
-    # High savings rate → HSA suitable
-    if savings_rate > 3:  # 3+ months emergency fund
+    # Strong emergency fund (6+ months) → HSA suitable, less pressure on rich medical plan
+    if emergency_months is not None and emergency_months >= 6:
         adjusted[BenefitType.HSA] = min(adjusted[BenefitType.HSA] + 20, 100)
         adjusted[BenefitType.MEDICAL] = max(adjusted[BenefitType.MEDICAL] - 10, 30)  # HDHP OK
+        # Emergency savings match less urgent if fund is strong
+        adjusted[BenefitType.EMERGENCY_SAVINGS_MATCH] = max(adjusted.get(BenefitType.EMERGENCY_SAVINGS_MATCH, 50) - 10, 0)
     
     # High debt → need disability protection
     if debt_to_income > 0.4:
@@ -1203,10 +1212,11 @@ def adjust_priors_with_financials(
         adjusted[BenefitType.FINANCIAL_COACHING] = min(adjusted[BenefitType.FINANCIAL_COACHING] + 20, 100)
         adjusted[BenefitType.EMERGENCY_SAVINGS_MATCH] = min(adjusted[BenefitType.EMERGENCY_SAVINGS_MATCH] + 15, 100)
     
-    # Low savings → emergency savings and financial coaching critical
-    if savings_rate < 1:  # Less than 1 month emergency fund
+    # Thin emergency fund (< 3 months) → emergency savings and coaching critical
+    if emergency_months is not None and emergency_months < 3:
         adjusted[BenefitType.EMERGENCY_SAVINGS_MATCH] = min(adjusted[BenefitType.EMERGENCY_SAVINGS_MATCH] + 30, 100)
         adjusted[BenefitType.FINANCIAL_COACHING] = min(adjusted[BenefitType.FINANCIAL_COACHING] + 25, 100)
+        adjusted[BenefitType.DISABILITY] = min(adjusted[BenefitType.DISABILITY] + 5, 100)
     
     # High income → can afford lifestyle benefits
     if financials.annual_income > 120000:
@@ -1216,7 +1226,7 @@ def adjust_priors_with_financials(
         adjusted[BenefitType.WORKCATION_POLICY] = min(adjusted[BenefitType.WORKCATION_POLICY] + 10, 100)
     
     # High savings + investment → interested in crypto/stock benefits
-    if savings_rate > 3 and financials.investment_accounts > 30000:
+    if (emergency_months is not None and emergency_months >= 6) and financials.investment_accounts > 30000:
         adjusted[BenefitType.CRYPTO_STOCK_BENEFITS] = min(adjusted[BenefitType.CRYPTO_STOCK_BENEFITS] + 20, 100)
     
     # Remote work adjustments (assume if they have coworking interest)
@@ -1369,8 +1379,8 @@ class AdaptiveQuestionnaireEngine:
         self.answer_history = self.answers
 
         # Configuration - FAST & ACCURATE STOPPING
-        self.min_questions = 7  # Minimum 7 questions for more data
-        self.max_questions = 10  # Hard cap at 10 questions
+        self.min_questions = 8  # Minimum 8 questions for better coverage
+        self.max_questions = 12  # Hard cap at 12 questions
         self.confidence_threshold = 0.90  # Higher = more confident before stopping
         self.entropy_threshold = 0.05  # Lower = needs more certainty to stop
     
@@ -1384,6 +1394,18 @@ class AdaptiveQuestionnaireEngine:
         Returns:
             bool: True if question should be skipped
         """
+        # If we already have savings and monthly expenses, we can derive emergency-fund adequacy.
+        # Skip questions that redundantly ask about months/years of savings.
+        try:
+            has_expenses = self.financials.monthly_expenses is not None and self.financials.monthly_expenses > 0
+            has_savings = self.financials.savings is not None and self.financials.savings >= 0
+        except Exception:
+            has_expenses = False
+            has_savings = False
+
+        if has_expenses and has_savings and question.id in ["Q20_emergency_fund", "Q44_emergency_fund"]:
+            return True
+        
         # Skip future family planning questions if user already has children
         if question.id in ["Q26_family_size", "Q5_family_priorities"]:
             if self.demographics.num_children > 0:

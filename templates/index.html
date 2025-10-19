@@ -313,12 +313,45 @@
             font-size: 0.85em;
             color: #666;
         }
-    </style>
+                /* Provided style integration */
+                #root {
+                    max-width: 1280px;
+                    margin: 0 auto;
+                    padding: 2rem;
+                    text-align: center;
+                }
+
+                .logo {
+                    height: 6em;
+                    padding: 1.5em;
+                    will-change: filter;
+                    transition: filter 300ms;
+                }
+                .logo:hover {
+                    filter: drop-shadow(0 0 2em #646cffaa);
+                }
+                .logo.react:hover {
+                    filter: drop-shadow(0 0 2em #61dafbaa);
+                }
+
+                @keyframes logo-spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+
+                @media (prefers-reduced-motion: no-preference) {
+                    a:nth-of-type(2) .logo { animation: logo-spin infinite 20s linear; }
+                }
+
+                .card { padding: 2em; }
+                .read-the-docs { color: #888; }
+        </style>
 </head>
 <body>
+    <div id="root">
     <div class="container">
         <div id="profileSection">
-            <h1>🎯 Adaptive Benefit Questionnaire</h1>
+            <h1>Adaptive Benefit Questionnaire</h1>
             <p class="subtitle">Let's find the best benefits for you with just a few smart questions</p>
             
             <div class="profile-form">
@@ -367,17 +400,12 @@
                 </div>
             </div>
             
-            <button class="btn" onclick="startQuestionnaire()">Start Questionnaire →</button>
+            <button class="btn" onclick="startQuestionnaire()">Start Questionnaire</button>
         </div>
 
         <div id="questionSection" class="question-container">
-            <div class="progress-text">
-                <span id="progressText">Question 1</span>
-                <span class="entropy-badge">Uncertainty: <span id="entropyText">0.0</span> bits</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
+            <!-- Progress UI removed by request -->
+            <div style="height:8px"></div>
             
             <div class="question-text" id="questionText"></div>
             
@@ -385,13 +413,14 @@
         </div>
 
         <div id="resultsSection" class="results-container">
-            <h1>✅ Your Personalized Benefit Recommendations</h1>
+            <h1>Your Personalized Benefit Recommendations</h1>
             <p class="subtitle">Based on your profile and answers</p>
             
             <div class="progress-text">
                 <span id="finalStats"></span>
             </div>
             
+            <div id="riskAssessmentContainer"></div>
             <div id="recommendationsContainer"></div>
             
             <button class="btn" onclick="location.reload()">Start New Assessment</button>
@@ -401,6 +430,7 @@
             <div class="spinner"></div>
             <p>Processing your answer...</p>
         </div>
+    </div>
     </div>
 
     <script>
@@ -445,21 +475,10 @@
             // Show question text
             let questionHtml = question.text;
             
-            // Add "why this question" reasoning if available
-            if (question.why && question.why.top_uncertain_benefits) {
-                questionHtml += `<div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; font-size: 0.85em; color: #856404;">
-                    <strong>🎯 Why this question?</strong> Based on your answers, we need to clarify: 
-                    <strong>${question.why.top_uncertain_benefits.slice(0, 2).map(b => b.replace(/_/g, ' ')).join(', ')}</strong>
-                </div>`;
-            }
+            // Removed the yellow "why this question" box - cleaner UI
             
             document.getElementById('questionText').innerHTML = questionHtml;
-            document.getElementById('progressText').textContent = 
-                `Question ${progress.questions_asked + 1}`;
-            document.getElementById('entropyText').textContent = progress.entropy;
-            
-            const progressPercent = ((progress.questions_asked) / progress.total_questions) * 100;
-            document.getElementById('progressFill').style.width = progressPercent + '%';
+            // Progress removed
             
             const choicesContainer = document.getElementById('choicesContainer');
             choicesContainer.innerHTML = '';
@@ -493,7 +512,7 @@
                 document.getElementById('loadingSection').classList.add('hidden');
 
                 if (data.complete) {
-                    displayResults(data.recommendations, data.progress, data.session_id);
+                    displayResults(data.recommendations, data.progress, data.session_id, data.risk_assessment);
                 } else {
                     document.getElementById('questionSection').classList.add('active');
                     displayQuestion(data.question, data.progress);
@@ -505,7 +524,7 @@
             }
         }
 
-        function displayResults(recommendations, progress, sessionId) {
+        function displayResults(recommendations, progress, sessionId, riskAssessment) {
             document.getElementById('resultsSection').classList.add('active');
             document.getElementById('finalStats').textContent = 
                 `${progress.questions_asked} questions asked • Final uncertainty: ${progress.entropy} bits`;
@@ -521,13 +540,68 @@
                           color: white; padding: 15px 40px; border-radius: 10px; text-decoration: none; 
                           font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
                           transition: transform 0.2s, box-shadow 0.2s;">
-                    📄 Download Comprehensive PDF Report
+                    Download Comprehensive PDF Report
                 </a>
             `;
             
             const container = document.getElementById('recommendationsContainer');
             container.innerHTML = '';
             container.appendChild(pdfButton);
+
+            // Render Risk Assessment (sorted by severity)
+            try {
+                if (riskAssessment) {
+                    const riskContainer = document.getElementById('riskAssessmentContainer');
+                    riskContainer.innerHTML = '';
+
+                    const title = document.createElement('h2');
+                    title.textContent = 'Comprehensive Risk Assessment';
+                    title.style.margin = '16px 0 8px 0';
+                    riskContainer.appendChild(title);
+
+                    const order = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+                    const items = [
+                        { label: 'Financial Risk', level: riskAssessment.financial_risk, detail: riskAssessment.financial_risk_detail },
+                        { label: 'Health & Wellness', level: riskAssessment.health_risk, detail: riskAssessment.health_risk_detail },
+                        { label: 'Mental Health & Burnout', level: riskAssessment.mental_health_risk, detail: riskAssessment.mental_health_risk_detail },
+                        { label: 'Family & Dependents', level: riskAssessment.family_risk, detail: riskAssessment.family_risk_detail },
+                        { label: 'Retirement Readiness', level: riskAssessment.retirement_risk, detail: riskAssessment.retirement_risk_detail },
+                        { label: 'Disability Protection', level: riskAssessment.disability_risk, detail: riskAssessment.disability_risk_detail },
+                        { label: 'Career & Growth', level: riskAssessment.career_risk, detail: riskAssessment.career_risk_detail },
+                        { label: 'Work-Life Balance', level: riskAssessment.worklife_risk, detail: riskAssessment.worklife_risk_detail }
+                    ].filter(x => x.level).sort((a,b) => (order[a.level] ?? 99) - (order[b.level] ?? 99));
+
+                    const fw = computeFinancialWellbeingScore();
+                    if (fw !== null) {
+                        const fwEl = document.createElement('div');
+                        fwEl.style.margin = '6px 0 12px 0';
+                        fwEl.innerHTML = `<strong>Financial Wellbeing Score:</strong> <span style="color:#6b0f1a">${fw}/100</span>`;
+                        riskContainer.appendChild(fwEl);
+                    }
+
+                    items.forEach(it => {
+                        const wrap = document.createElement('div');
+                        wrap.style.borderLeft = '4px solid #6b0f1a';
+                        wrap.style.background = '#f9f5f5';
+                        wrap.style.padding = '12px 14px';
+                        wrap.style.borderRadius = '6px';
+                        wrap.style.marginBottom = '10px';
+
+                        const h = document.createElement('div');
+                        h.style.fontWeight = '600';
+                        h.style.marginBottom = '4px';
+                        h.textContent = `${it.label} — Risk: ${it.level}`;
+                        wrap.appendChild(h);
+
+                        const d = document.createElement('div');
+                        d.style.color = '#555';
+                        d.textContent = it.detail || '';
+                        wrap.appendChild(d);
+
+                        riskContainer.appendChild(wrap);
+                    });
+                }
+            } catch {}
             
             recommendations.forEach(rec => {
                 const div = document.createElement('div');
@@ -569,6 +643,24 @@
                 return value;
             }
             return value;
+        }
+
+        function computeFinancialWellbeingScore() {
+            try {
+                const income = parseFloat(document.getElementById('annual_income').value || '0');
+                const debt = parseFloat(document.getElementById('total_debt').value || '0');
+                const monthly = parseFloat(document.getElementById('monthly_expenses').value || '0');
+                const savings = parseFloat(document.getElementById('savings').value || '0');
+                const children = parseInt(document.getElementById('num_children').value || '0');
+                const dti = income > 0 ? (debt / income) : 0;
+                const emergencyMonths = monthly > 0 ? (savings / monthly) : 0;
+                const dtiScore = Math.max(0, 40 * (1 - Math.min(dti, 1.0)));
+                const efScore = Math.min(40, emergencyMonths * (40/6));
+                const stabilityScore = children === 0 ? 20 : 15;
+                return Math.min(100, Math.round(dtiScore + efScore + stabilityScore));
+            } catch {
+                return null;
+            }
         }
     </script>
 </body>

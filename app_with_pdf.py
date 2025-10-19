@@ -20,6 +20,26 @@ app.secret_key = secrets.token_hex(16)
 sessions = {}
 
 
+def _convert_profile_types(profile: dict) -> dict:
+    p = dict(profile)
+    try:
+        if 'age' in p:
+            p['age'] = int(p['age']) if p['age'] else 0
+        if 'annual_income' in p:
+            p['annual_income'] = float(p['annual_income']) if p['annual_income'] else 0.0
+        if 'monthly_expenses' in p:
+            p['monthly_expenses'] = float(p['monthly_expenses']) if p['monthly_expenses'] else 0.0
+        if 'total_debt' in p:
+            p['total_debt'] = float(p['total_debt']) if p['total_debt'] else 0.0
+        if 'savings' in p:
+            p['savings'] = float(p['savings']) if p['savings'] else 0.0
+        if 'num_children' in p:
+            p['num_children'] = int(p['num_children']) if p['num_children'] else 0
+    except Exception:
+        pass
+    return p
+
+
 @app.route('/')
 def index():
     """Serve the main questionnaire page"""
@@ -115,6 +135,11 @@ def submit_answer():
         # Store recommendations for PDF
         sessions[session_id]['recommendations'] = recommendations
         
+        # Compute risk assessment for results page
+        user_profile_raw = sessions[session_id].get('user_profile', {})
+        user_profile_converted = _convert_profile_types(user_profile_raw)
+        risk_assessment = calculate_risk_assessment(user_profile_converted, sessions[session_id].get('answers', []))
+
         return jsonify({
             'complete': True,
             'recommendations': [
@@ -133,7 +158,8 @@ def submit_answer():
                 'total_questions': len(engine.question_bank),
                 'entropy': round(engine.calculate_entropy(engine.benefit_scores), 2)
             },
-            'session_id': session_id  # Return for PDF download
+            'session_id': session_id,  # Return for PDF download
+            'risk_assessment': risk_assessment
         })
     
     # Get next question
@@ -173,7 +199,7 @@ def generate_pdf_report(session_id):
     # Convert recommendations to dict format
     recs_dict = [
         {
-            'benefit': rec.benefit_type.value,
+            'benefit_type': rec.benefit_type.value,  # Changed from 'benefit' to 'benefit_type'
             'score': rec.score,
             'priority': rec.priority,
             'confidence': rec.confidence,
@@ -211,7 +237,27 @@ def generate_pdf_report(session_id):
     filename = f"benefit_report_{session_id}.pdf"
     filepath = os.path.join('reports', filename)
     
-    pdf_generator.generate_report(user_profile_converted, recs_dict, risk_assessment, filepath)
+    # Enrich answers with question text and selected label for PDF
+    answered_qas = []
+    try:
+        engine = session_data.get('engine')
+        bank = getattr(engine, 'question_bank', []) if engine else []
+        qmap = {q.id: q for q in bank}
+        for a in answers:
+            qid = a.get('question_id')
+            choice_idx = a.get('choice')
+            q = qmap.get(qid)
+            if q:
+                label = q.choice_a if int(choice_idx) == 0 else q.choice_b
+                answered_qas.append({
+                    'id': qid,
+                    'text': q.text,
+                    'answer': label
+                })
+    except Exception:
+        answered_qas = []
+
+    pdf_generator.generate_report(user_profile_converted, recs_dict, risk_assessment, filepath, answered_questions=answered_qas)
     
     # Send file for download
     return send_file(
@@ -224,14 +270,14 @@ def generate_pdf_report(session_id):
 
 if __name__ == '__main__':
     print("\n" + "="*70)
-    print("🚀 99% Accurate Benefit Questionnaire with PDF Reports")
+    print("Benefit Questionnaire with PDF Reports")
     print("="*70)
-    print("\n✨ Features:")
-    print("  • Adaptive questioning (7-15 questions)")
-    print("  • 99% accurate ML recommendations")
+    print("\nFeatures:")
+    print("  • Adaptive questioning (8–12 questions)")
+    print("  • Accurate recommendations")
     print("  • Comprehensive PDF reports with risk assessment")
     print("  • Supabase integration for benefit details")
-    print("\n👉 Open your browser to: http://localhost:5000")
+    print("\nOpen your browser to: http://localhost:5000")
     print("\nPress Ctrl+C to stop the server\n")
     
     # Create reports directory
