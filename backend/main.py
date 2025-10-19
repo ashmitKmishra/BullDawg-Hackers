@@ -98,28 +98,24 @@ def summarize_text_chunk(text: str, chunk_number: int, total_chunks: int) -> str
     prompt = f"""
     This is chunk {chunk_number} of {total_chunks} from an employee benefits document.
     
-    Please summarize ALL insurance plans and benefits information in this section, including:
-    - Health insurance plans (medical, prescription)
-    - Dental insurance plans (DHMO, PPO, self-funded)
-    - Vision insurance plans
-    - Life insurance plans
-    - Disability insurance plans (STD, LTD)
-    - Accident insurance
-    - Critical illness insurance
-    - Hospital indemnity insurance
-    - Employee assistance programs
-    - Any other benefits mentioned
+    Please create a CONCISE summary of ALL insurance plans and benefits in this section.
     
-    For each plan found, include:
-    - Plan names and types
-    - Key benefits and features
-    - Coverage details
-    - Cost information
-    - Eligibility requirements
+    Format: For each plan, provide:
+    1. Plan Name and Type
+    2. 2-3 key features (bullet points)
+    3. Cost info (if mentioned)
     
-    IMPORTANT: Include plans mentioned in disclosures, footnotes, or fine print sections.
+    Include ALL of these plan types if found:
+    - Health/Medical, Dental (DHMO/PPO/Self-funded), Vision
+    - Life, Disability (STD/LTD)
+    - Accident, Critical Illness, Hospital Indemnity
+    - Employee Assistance Programs (EAP)
+    - Retirement, FSA, HSA, other benefits
     
-    Keep the summary concise but comprehensive.
+    IMPORTANT: 
+    - Include plans from disclosures/footnotes
+    - Be concise - focus on plan identification and key details only
+    - Avoid lengthy descriptions
     
     Text:
     {text}
@@ -145,13 +141,16 @@ def categorize_insurance_plans(text: str) -> Dict[str, Any]:
     if not model:
         raise HTTPException(status_code=500, detail="Gemini API not configured")
     
-    # For better results, process the entire summarized text since it's already condensed
-    # Limit to 30000 chars to stay within Gemini token limits
-    MAX_TEXT_LENGTH = 30000
+    # Gemini 2.5 Pro has a much larger context window (up to 1M tokens)
+    # For summaries, we can safely process up to ~200K characters (roughly 50K tokens)
+    # This should handle most benefit documents after summarization
+    MAX_TEXT_LENGTH = 200000
     
     if len(text) > MAX_TEXT_LENGTH:
         print(f"Text too long ({len(text)} chars), truncating to {MAX_TEXT_LENGTH} chars")
-        text = text[:MAX_TEXT_LENGTH] + "\n\n[Note: Document truncated to fit within API limits. Some plans from later sections may be summarized less completely.]"
+        # If we need to truncate, keep the beginning and end (most important sections)
+        half_length = MAX_TEXT_LENGTH // 2
+        text = text[:half_length] + "\n\n[... Middle section truncated ...]\n\n" + text[-half_length:] + "\n\n[Note: Document was very large, middle section summarized.]"
     else:
         print(f"Text length is {len(text)} chars, processing full text")
     
