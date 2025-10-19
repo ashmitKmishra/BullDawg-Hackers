@@ -23,7 +23,8 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Ignore variables used via JSX namespaces like <motion.div>
+      'no-unused-vars': ['error', { varsIgnorePattern: '^(motion|[A-Z_])' }],
     },
   },
 ])
