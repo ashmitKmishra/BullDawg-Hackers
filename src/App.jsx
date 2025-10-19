@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import AIChatbot from './components/AIChatbot';
+import PDFUploadModal from './components/PDFUploadModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -16,6 +17,7 @@ function App() {
   const [employeeSearch, setEmployeeSearch] = useState('');
   const [benefitSearch, setBenefitSearch] = useState('');
   const [showAddBenefitForm, setShowAddBenefitForm] = useState(false);
+  const [showPDFUploadModal, setShowPDFUploadModal] = useState(false);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [showManagerDropdown, setShowManagerDropdown] = useState(false);
   const [showChatbot, setShowChatbot] = useState(true);
@@ -217,6 +219,12 @@ function App() {
     return;
   };
 
+  const handlePDFUploadSuccess = () => {
+    // Refresh benefits list after successful PDF upload and sync
+    fetchBenefits();
+    setShowPDFUploadModal(false);
+  };
+
   return (
     <div className="app-fullscreen">
       {/* Header */}
@@ -316,10 +324,10 @@ function App() {
             {!showAddBenefitForm ? (
               <div className="add-button-container">
                 <button 
-                  onClick={() => setShowAddBenefitForm(true)}
+                  onClick={() => setShowPDFUploadModal(true)}
                   className="show-form-btn"
                 >
-                  + Add New Benefit/Policy
+                  + Add New Benefit/Policy (Upload PDF)
                 </button>
               </div>
             ) : (
@@ -592,6 +600,14 @@ function App() {
           <span className="ai-icon">🤖</span>
           <span className="ai-label">CoverCompass AI</span>
         </button>
+      )}
+
+      {/* PDF Upload Modal */}
+      {showPDFUploadModal && (
+        <PDFUploadModal 
+          onClose={() => setShowPDFUploadModal(false)}
+          onSuccess={handlePDFUploadSuccess}
+        />
       )}
     </div>
   );

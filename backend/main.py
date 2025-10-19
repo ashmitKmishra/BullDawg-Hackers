@@ -9,9 +9,12 @@ import json
 from datetime import datetime
 from typing import List, Dict, Any
 from dotenv import load_dotenv
+from pathlib import Path
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from backend directory
+backend_dir = Path(__file__).parent
+env_path = backend_dir / '.env'
+load_dotenv(dotenv_path=env_path)
 
 app = FastAPI(title="Benefits PDF Analyzer", version="1.0.0")
 
@@ -423,4 +426,4 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

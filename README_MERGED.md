@@ -1,9 +1,20 @@
 # BullDawg Hackers - Integrated Benefits Management System
 
-This branch (`Backend+HR`) merges two independent systems into one unified platform:
+🎉 **NEW FEATURE:** Automated PDF Upload & AI Benefits Extraction!
+
+This branch (`HR+PDF_Backend`) merges two independent systems into one unified platform:
 
 1. **Step1_RecommendationSystem** - AI-powered PDF benefits analyzer
 2. **HR-manager** - HR management interface with Supabase integration
+
+## ✨ Key Features
+
+- ✅ **AI-Powered PDF Processing** - Upload benefits PDFs and automatically extract information
+- ✅ **Real-time Progress Tracking** - See upload progress and estimated processing time
+- ✅ **Automatic Database Sync** - Benefits are automatically added to Supabase
+- ✅ **Professional HR Dashboard** - Manage benefits, employees, and enrollments
+- ✅ **AI Chatbot Assistant** - CoverCompass AI for help and guidance
+- ✅ **Benefit Enrollment Tracking** - Track which employees have which benefits
 
 ## 🏗️ System Architecture
 
@@ -148,7 +159,70 @@ CREATE TABLE employee_benefits (
 );
 ```
 
-## 🚀 Running the System
+## 🚀 Quick Start
+
+### Easiest Way - Use the Startup Script
+
+```bash
+# Make scripts executable (one time)
+chmod +x start-all.sh stop-all.sh sync-benefits.sh
+
+# Start all services
+./start-all.sh
+
+# The script will start:
+# - React Frontend (http://localhost:5173)
+# - Express API (http://localhost:3001)
+# - Python Backend (http://localhost:8000)
+
+# To stop everything:
+./stop-all.sh
+```
+
+### Manual Start - Run Each Service
+
+#### Terminal 1 - Frontend (React + Vite)
+```bash
+npm run dev
+# Runs on http://localhost:5173 or 3000
+```
+
+#### Terminal 2 - API Server (Express)
+```bash
+node server.js
+# Runs on http://localhost:3001
+```
+
+#### Terminal 3 - Backend (FastAPI)
+```bash
+cd backend
+source venv/bin/activate  # or: source ../LincHack/bin/activate
+python main.py
+# Runs on http://localhost:8000
+```
+
+## 📱 Using the PDF Upload Feature
+
+### Step 1: Access Benefits Page
+1. Open http://localhost:5173 (or 3000)
+2. Click "Manage Benefits and Policies" tab
+
+### Step 2: Upload PDF
+1. Click "+ Add New Benefit/Policy (Upload PDF)"
+2. Drag & drop a PDF or click to browse
+3. Click "Upload and Process"
+
+### Step 3: Monitor Progress
+- Watch the progress bar (0-100%)
+- See estimated processing time
+- View current status (Uploading → Processing → Categorizing → Syncing)
+
+### Step 4: Completion
+- Benefits are automatically added to the database
+- The benefits list refreshes automatically
+- You can now assign these benefits to employees
+
+## 🔧 Running the System (Detailed)
 
 ### Option 1: Run All Services
 
