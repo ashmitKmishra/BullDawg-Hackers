@@ -72,6 +72,12 @@
   border-radius: 8px;
 }
 
+.main-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .error-section {
   margin: 2rem 0;
   padding: 2rem;

@@ -2,6 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import LoginButton from './components/LoginButton'
 import LogoutButton from './components/LogoutButton'
 import Profile from './components/Profile'
+import PDFUpload from './components/PDFUpload'
 import './App.css'
 
 function App() {
@@ -47,8 +48,11 @@ function App() {
         )}
       </div>
       {isAuthenticated && (
-        <div className="content">
-          <p>Welcome! The main application will be implemented by the team.</p>
+        <div className="main-content">
+          <PDFUpload />
+          <div className="content">
+            <p>Welcome! Upload your benefits PDF above to get AI-powered insurance plan recommendations.</p>
+          </div>
         </div>
       )}
     </div>
