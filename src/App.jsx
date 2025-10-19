@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import AIChatbot from './components/AIChatbot';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -17,6 +18,8 @@ function App() {
   const [showAddBenefitForm, setShowAddBenefitForm] = useState(false);
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
   const [showManagerDropdown, setShowManagerDropdown] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(true);
+  const [currentStatIndex, setCurrentStatIndex] = useState(0);
 
   const hrManagerName = "Sarah Johnson";
 
@@ -36,6 +39,16 @@ function App() {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [showManagerDropdown]);
+
+  // Rotating statistics
+  useEffect(() => {
+    if (view === 'home') {
+      const interval = setInterval(() => {
+        setCurrentStatIndex((prev) => (prev + 1) % 3);
+      }, 5000); // Switch stat every 5 seconds
+      return () => clearInterval(interval);
+    }
+  }, [view]);
 
   const fetchBenefits = async () => {
     const res = await fetch(`${API_URL}/benefits`);
@@ -144,9 +157,64 @@ function App() {
     (ben.description && ben.description.toLowerCase().includes(benefitSearch.toLowerCase()))
   );
 
+  // Calculate statistics
+  const calculateStats = () => {
+    if (employees.length === 0) {
+      return {
+        avgBenefits: 0,
+        mostUsedBenefit: 'N/A',
+        avgPaidPerEmployee: 0
+      };
+    }
+
+    // Average benefits per employee
+    const avgBenefits = (employeeBenefits.length / employees.length).toFixed(1);
+
+    // Most used benefit
+    const benefitCounts = {};
+    employeeBenefits.forEach(eb => {
+      benefitCounts[eb.benefit_id] = (benefitCounts[eb.benefit_id] || 0) + 1;
+    });
+
+    let mostUsedBenefitId = null;
+    let maxCount = 0;
+    for (const [benefitId, count] of Object.entries(benefitCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostUsedBenefitId = benefitId;
+      }
+    }
+
+    const mostUsedBenefit = mostUsedBenefitId 
+      ? benefits.find(b => b.id === parseInt(mostUsedBenefitId))?.name || 'N/A'
+      : 'N/A';
+
+    // Average paid per employee
+    let totalCost = 0;
+    employeeBenefits.forEach(eb => {
+      const benefit = benefits.find(b => b.id === eb.benefit_id);
+      if (benefit && benefit.cost) {
+        totalCost += parseFloat(benefit.cost) || 0;
+      }
+    });
+    const avgPaidPerEmployee = employees.length > 0 
+      ? (totalCost / employees.length).toFixed(2) 
+      : 0;
+
+    return { avgBenefits, mostUsedBenefit, avgPaidPerEmployee };
+  };
+
+  const stats = calculateStats();
+
   // Format cost display
   const formatCost = (cost) => {
     return cost === 0 || cost === '0' || cost === '0.00' ? 'Price varies' : `$${cost}/month`;
+  };
+
+  const handleChatbotAction = (action) => {
+    // Actions are handled within the chatbot itself
+    // No automatic tab switching
+    return;
   };
 
   return (
@@ -203,15 +271,38 @@ function App() {
         {/* HOME VIEW */}
         {view === 'home' && (
           <div className="home-view">
-            <h2 className="page-title">Dashboard Overview</h2>
-            <div className="stats-container">
-              <div className="stat-box">
-                <div className="stat-number">{employees.length}</div>
-                <div className="stat-label">Total Employees</div>
+            {/* Welcome Message */}
+            <div className="welcome-section">
+              <h2 className="welcome-title">Welcome back, {hrManagerName}</h2>
+              <p className="welcome-subtitle">Here's your HR dashboard overview</p>
+            </div>
+
+            {/* Statistics Grid */}
+            <div className="stats-grid">
+              <div className="stat-card-modern">
+                <div className="stat-header">Total Employees</div>
+                <div className="stat-value">{employees.length}</div>
               </div>
-              <div className="stat-box">
-                <div className="stat-number">{benefits.length}</div>
-                <div className="stat-label">Benefits & Policies Offered</div>
+              
+              <div className="stat-card-modern">
+                <div className="stat-header">Benefits & Policies</div>
+                <div className="stat-value">{benefits.length}</div>
+              </div>
+              
+              <div className={`stat-card-modern rotating ${currentStatIndex === 0 ? 'active' : ''}`}>
+                <div className="stat-header">Avg Benefits per Employee</div>
+                <div className="stat-value">{stats.avgBenefits}</div>
+              </div>
+              
+              <div className={`stat-card-modern rotating ${currentStatIndex === 1 ? 'active' : ''}`}>
+                <div className="stat-header">Most Used Benefit</div>
+                <div className="stat-value-text">{stats.mostUsedBenefit}</div>
+              </div>
+              
+              <div className={`stat-card-modern rotating ${currentStatIndex === 2 ? 'active' : ''}`}>
+                <div className="stat-header">Avg Cost per Employee</div>
+                <div className="stat-value">${stats.avgPaidPerEmployee}</div>
+                <div className="stat-unit">per month</div>
               </div>
             </div>
           </div>
@@ -481,6 +572,26 @@ function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI Chatbot */}
+      {showChatbot && (
+        <AIChatbot 
+          onClose={() => setShowChatbot(false)}
+          onAction={handleChatbotAction}
+        />
+      )}
+
+      {/* AI Assistant Toggle Button */}
+      {!showChatbot && (
+        <button 
+          className="ai-toggle-btn" 
+          onClick={() => setShowChatbot(true)}
+          title="Open CoverCompass AI"
+        >
+          <span className="ai-icon">🤖</span>
+          <span className="ai-label">CoverCompass AI</span>
+        </button>
       )}
     </div>
   );
