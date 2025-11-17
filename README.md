@@ -1,4 +1,4 @@
-# CoverageCraft 🛡️
+# CoverageCompass 🛡️
 
 > AI-Powered Insurance & Benefits Recommendation Platform
 
